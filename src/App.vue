@@ -2,20 +2,50 @@
   <div id="app">
     <MenuBar brand="WORKOUT BUDDY" />
     <div class="container">
-      <WorkoutLine />
+      <WorkoutList :list="workoutItems" />
+      <button class="btn btn-secondary" @click="addWorkoutItem">Add</button>
     </div>
   </div>
 </template>
 
 <script>
 import MenuBar from './components/MenuBar.vue'
-import WorkoutLine from './components/WorkoutLine'
+import WorkoutList from './components/WorkoutList'
 
 export default {
   name: 'App',
+  data: function() {
+    return {
+      workoutItems: [{ id: 0, description: 'Curls', sets: 3, reps: 20, weight: 150 }]
+    } 
+  },
   components: {
     MenuBar,
-    WorkoutLine
+    WorkoutList
+  },
+  methods: {
+    nextId() {
+      let maxId = 0;
+      let item;
+      let i;
+      for (i=0; i < this.workoutItems.length; i++) {
+        item = this.workoutItems[i];
+        if (item.id > maxId) {
+          maxId = item.id;
+        }
+      }
+      return maxId + 1;
+    },
+
+    addWorkoutItem() {
+      this.workoutItems.push({
+        id: this.nextId(), 
+        description:'',
+        sets: 0,
+        reps: 0,
+        weight: 150
+      })
+    }
   }
 }
 </script>

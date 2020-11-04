@@ -20,7 +20,9 @@
 
 <script>
 export default {
-  props: ['brand'],
+  props: {
+    brand: String
+  },
   name: 'MenuBar'
 }
 </script>

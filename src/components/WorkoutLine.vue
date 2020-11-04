@@ -1,35 +1,21 @@
 <template>
   <div class="workout-line">
-    <input class="description" type="text" @input="onInputDescription" placeholder="Description"/>
-    <input class="sets" type="number" @input="onInputSets" placeholder="Sets" min="1" />
-    <input class="reps" type="number" @input="onInputReps" placeholder="Reps" min="1" />
-    <input class="weight" type="number" @input="onInputWeight" placeholder="Weight or Time" min="0" step="5"/>
+    <input class="description" type="text" v-model="workoutItem.description" placeholder="Description"/>
+    <input class="sets" type="number" v-model="workoutItem.sets" placeholder="Sets" min="1" />
+    <input class="reps" type="number" v-model="workoutItem.reps" placeholder="Reps" min="1" />
+    <input class="weight" type="number" v-model="workoutItem.weight" placeholder="Weight or Time" min="0" step="5"/>
+    <!--<button class="btn btn-outline-danger" @click="onDeleteLine">X</button> -->
   </div>
 </template>
 
 <script>
 export default {
-  props: [],
-  data: function () {
-    return {
-      description: '',
-      sets: 1,
-      reps: 1,
-      weight: 0
-    }
+  props: {
+    workoutItem: Object
   },
   methods: {
-    onInputDescription(event) {
-      this.description = event.target.value;
-    },
-    onInputSets(event) {
-      this.sets = event.target.value;
-    },
-    onInputReps(event) {
-      this.reps = event.target.value;
-    },
-    onInputWeight(event) {
-      this.reps = event.target.value;
+    onDeleteLine() {
+      this.$emit('deleteItem', this.workoutItem.id)
     }
   }
 }
@@ -47,10 +33,10 @@ export default {
     flex: 2;
   }
   .sets {
-    max-width: 3rem;
+    max-width: 4rem;
   }
   .reps {
-    max-width: 3rem;
+    max-width: 5rem;
   }
   .weight {
     max-width: 5rem;
