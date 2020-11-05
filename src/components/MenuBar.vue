@@ -26,3 +26,9 @@ export default {
   name: 'MenuBar'
 }
 </script>
+
+<style scoped>
+.nav-link {
+  color: black;
+}
+</style>

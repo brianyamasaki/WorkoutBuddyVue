@@ -1,18 +1,21 @@
 <template>
-  <ul>
-<!--    <WorkoutLine :workoutItem="list[0]" /> -->
-    <WorkoutLine v-for="item in list" :key="item.id" :workoutItem="item" />
-  </ul>
+  <div>
+    <ul>
+  <!--    <WorkoutLine :workoutItem="list[0]" /> -->
+      <WorkoutLine v-for="item in allWorkoutItems" :key="item.id" :workoutItem="item" />
+    </ul>
+    <button class="btn btn-secondary" @click="addWorkoutItem">Add</button>
+  </div>
 </template>
 
 <script>
 import WorkoutLine from './WorkoutLine.vue'
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'WorkoutList',
-  props: {
-    list: Array
-  },
+  computed: mapGetters(['allWorkoutItems']),
+  methods: mapActions(['addWorkoutItem']),
   components: {
     WorkoutLine
   }
