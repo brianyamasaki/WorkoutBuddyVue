@@ -1,21 +1,19 @@
 <template>
   <div id="app">
-    <MenuBar brand="WORKOUT BUDDY" />
     <div class="container">
-      <WorkoutList />
+      <MenuBar brand="WORKOUT BUDDY" />
+      <router-view />
     </div>
   </div>
 </template>
 
 <script>
 import MenuBar from './components/MenuBar.vue'
-import WorkoutList from './components/WorkoutList'
 
 export default {
   name: 'App',
   components: {
-    MenuBar,
-    WorkoutList
+    MenuBar
   }
 }
 </script>
