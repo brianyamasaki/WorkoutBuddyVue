@@ -34,7 +34,6 @@ const actions = {
     commit('addNewItem');
   },
   saveWorkoutList({ state }) {
-    console.log(state);
     localStorage.setItem('workoutList', JSON.stringify(state.list));
   },
   loadWorkoutList({ commit }) {

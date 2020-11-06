@@ -2,19 +2,19 @@
   <div class="workout-line text-left" >
     <div class="description">
       <div v-if="titleLine" class="titleLine">Description</div>
-      <input v-else :class="{ 'non-editable' : !editable}" readonly="editable" type="text" v-model="workoutItem.description" placeholder="Description" />
+      <input v-else :class="{ 'non-editable' : !editable}" :[readonly]="readonly" type="text" v-model="workoutItem.description" placeholder="Description" />
     </div>
     <div class="sets">
       <div v-if="titleLine" class="titleLine">Sets</div>
-      <input v-else :class="{ 'non-editable' : !editable}" readonly="editable" type="number" v-model="workoutItem.sets" placeholder="Sets" min="1" />
+      <input v-else :class="{ 'non-editable' : !editable}" :[readonly]="readonly" type="number" v-model="workoutItem.sets" placeholder="Sets" min="1" />
     </div>
     <div class="reps">
       <div v-if="titleLine" class="titleLine">Reps</div>
-      <input v-else :class="{ 'non-editable' : !editable}" readonly="editable" class="reps" type="number" v-model="workoutItem.reps" placeholder="Reps" min="1" />
+      <input v-else :class="{ 'non-editable' : !editable}" :[readonly]="readonly" class="reps" type="number" v-model="workoutItem.reps" placeholder="Reps" min="1" />
     </div>
     <div class="weight">
       <div v-if="titleLine" class="titleLine">Weight</div>
-      <input v-else :class="{ 'non-editable' : !editable}" readonly="editable" class="weight" type="number" v-model="workoutItem.weight" placeholder="Weight or Time" min="0" step="5"/>
+      <input v-else :class="{ 'non-editable' : !editable}" :[readonly]="readonly" class="weight" type="number" v-model="workoutItem.weight" placeholder="Weight or Time" min="0" step="5"/>
     </div>
     <div class="buttons">
       <button v-if="editable" class="btn btn-outline-danger" @click="removeWorkoutItem(workoutItem.id)">X</button>
@@ -31,6 +31,11 @@ export default {
     workoutItem: Object,
     editable: Boolean,
     titleLine: Boolean
+  },
+  computed: {
+    readonly() {
+      return this.editable? 'foo' : 'readonly';
+    }
   },
   methods: {
     ...mapActions(['removeWorkoutItem']),
