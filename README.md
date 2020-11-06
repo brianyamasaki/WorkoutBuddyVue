@@ -38,8 +38,6 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Ideas
 
-- only allow editing of workout in edit mode of list
-- Store workout in localstorage
 - allow manual and automatic sorting of workout items
 - allow aerobic vs. weight items
 - allow saving of adjustments for weight machines

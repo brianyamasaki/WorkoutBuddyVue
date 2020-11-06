@@ -1,0 +1,13 @@
+html,
+body {
+  height: 100%;
+}
+body {
+  background-color: blanchedalmond;
+  background-image: url('./assets/dividedCircle.svg'),
+    url('./assets/dumbbell.svg');
+  background-size: 400px, 300px;
+  background-repeat: no-repeat, no-repeat;
+  background-position: center -80px, center 400px;
+  text-align: center;
+}

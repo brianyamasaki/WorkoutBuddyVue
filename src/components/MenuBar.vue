@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-md">
+  <nav class="navbar navbar-expand-md fixed-top">
     <router-link class="navbar-brand" to="/">
     {{ brand }}
     </router-link>
