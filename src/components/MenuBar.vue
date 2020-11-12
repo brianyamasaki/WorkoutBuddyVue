@@ -15,18 +15,27 @@
         <li class="nav-item">
           <router-link class="nav-link" to="/ideas">Ideas</router-link>
         </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/login">Log in</router-link>
-        </li>
       </ul>
+      <b-button v-if="isSignedIn" @click="signOut" class="pull-right">Sign Out</b-button>
+      <router-link v-else class="nav-link pull-right" to="/login">Sign in</router-link>
     </div>
   </nav>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 export default {
   props: {
     brand: String
+  },
+  methods: {
+    ...mapActions(['signOut']),
+    ...mapGetters(['getUserInfo'])
+    },
+  computed: {
+    isSignedIn() {
+      return !!this.getUserInfo();
+    }
   },
   name: 'MenuBar'
 }

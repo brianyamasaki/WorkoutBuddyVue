@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'LoginPage',
   data() {
@@ -50,9 +52,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['signIn']),
     onSubmit(evt) {
       evt.preventDefault();
-      console.log(this.form.email, this.form.password)
+      this.signIn(this.form);
     }
   }
 }

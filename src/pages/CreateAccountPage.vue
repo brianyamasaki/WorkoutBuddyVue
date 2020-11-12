@@ -18,23 +18,31 @@
         <b-form-group 
           label="Choose your password:"
           label-for="password"
+          description="Minimum of 6 characters in length"
           >
           <b-form-input
             id="password"
             v-model="form.password"
             type="password"
             required
-            placeholder="Password" />
+            placeholder="Password" 
+            :state="passwordState"
+          />
         </b-form-group>
         <div class="text-center">
         <b-button type="submit" variant="primary">Create Account</b-button>
         </div>
       </b-form>
+      <b-alert v-if="getUserErrorMessage" variant="warning">
+        {{getUserErrorMessage}}
+      </b-alert>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'CreateAccountPage',
   data() {
@@ -45,10 +53,19 @@ export default {
       }
     }
   },
+  computed: {
+    passwordState() {
+      return this.form.password.length > 6 ? true : false;
+    }
+  },
   methods: {
+    ...mapGetters(['getUserInfo', 'getUserErrorMessage']),
+    ...mapActions(['createAccount']),
     onSubmit(evt) {
       evt.preventDefault();
-      console.log(this.form.email, this.form.password)
+      if (this.passwordState) {
+        this.createAccount(this.form);
+      }
     }
   }
 }

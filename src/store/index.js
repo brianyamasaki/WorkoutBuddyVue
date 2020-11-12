@@ -3,6 +3,7 @@ import Vue from 'vue';
 
 import { vuexfireMutations, firestoreAction } from 'vuexfire';
 import workout from './modules/workout';
+import auth from './modules/auth';
 import { db } from '../plugins/firebase';
 
 Vue.use(Vuex);
@@ -36,6 +37,7 @@ export default new Vuex.Store({
     })
   },
   modules: {
-    workout
+    workout,
+    auth
   }
 });
