@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import router from '../../routes';
+import { db } from '../../plugins/firebase';
 
 const state = () => ({
   user: null,
@@ -19,22 +20,16 @@ const mutations = {
   }
 };
 
-const authStateWatcher = (commit, user) => {
-  commit('setAuthUser', user);
-};
-
 const actions = {
   createAccount({ commit }, { email, password }) {
     const auth = firebase.auth();
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
-        auth.onAuthStateChanged((user) => {
-          authStateWatcher(commit, user);
-        });
-        router.push({ path: '/' });
+        router.push('home');
       })
       .catch((error) => {
+        console.log(error.message);
         commit('setAuthError', error.message);
         commit('setAuthUser', null);
       });
@@ -44,10 +39,7 @@ const actions = {
     auth
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        auth.onAuthStateChanged((user) => {
-          authStateWatcher(commit, user);
-        });
-        router.push({ path: '/' });
+        router.push({ path: '/users' });
       })
       .catch((error) => {
         commit('setAuthError', error.message);
@@ -60,10 +52,24 @@ const actions = {
       .signOut()
       .then(() => {
         commit('setAuthError', '');
+        router.push('login');
       })
       .catch((error) => {
         commit('setAuthError', error.message);
       });
+  },
+  addToUserTable(context, payload) {
+    if (payload.uid) {
+      db.collection('users')
+        .doc(payload.uid)
+        .set(payload, { merge: true })
+        .then(() => {
+          console.log('user table updated');
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }
   }
 };
 

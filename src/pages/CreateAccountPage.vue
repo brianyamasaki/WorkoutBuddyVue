@@ -29,18 +29,41 @@
             :state="passwordState"
           />
         </b-form-group>
+        <b-form-group
+          label="First Name"
+          label-for="fname"
+        >
+          <b-form-input
+            id="fname"
+            v-model="form.firstName"
+            type="text"
+            placeholder="First Name"
+          />
+        </b-form-group>
+        <b-form-group
+          label="Last Name"
+          label-for="lname"
+        >
+          <b-form-input
+            id="lname"
+            v-model="form.lastName"
+            type="text"
+            placeholder="Last Name"
+          />
+        </b-form-group>
         <div class="text-center">
         <b-button type="submit" variant="primary">Create Account</b-button>
         </div>
       </b-form>
-      <b-alert v-if="getUserErrorMessage" variant="warning">
-        {{getUserErrorMessage}}
+      <b-alert :show="showError" variant="danger">
+        {{errorMessage()}}
       </b-alert>
     </div>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase/app';
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
@@ -50,7 +73,11 @@ export default {
       form: {
         email: '',
         password: '',
-      }
+        firstName: '',
+        lastName: ''
+      },
+      showError: false,
+      submitted: false
     }
   },
   computed: {
@@ -60,13 +87,33 @@ export default {
   },
   methods: {
     ...mapGetters(['getUserInfo', 'getUserErrorMessage']),
-    ...mapActions(['createAccount']),
+    ...mapActions(['createAccount', 'addToUserTable']),
+    errorMessage() {
+      const msg = this.getUserErrorMessage();
+      this.showError = !!msg;
+      return msg;
+    },
     onSubmit(evt) {
       evt.preventDefault();
       if (this.passwordState) {
         this.createAccount(this.form);
+        this.submitted = true;
       }
     }
+  },
+  mounted: function() {
+    firebase
+      .auth()
+      .onAuthStateChanged(user => {
+        if (user && this.submitted && !this.getUserErrorMessage()) {
+          this.addToUserTable({
+            uid: user.uid,
+            email: user.email,
+            firstName: this.form.firstName,
+            lastName: this.form.lastName
+          });
+        }
+      })
   }
 }
 </script>

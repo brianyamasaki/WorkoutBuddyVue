@@ -33,7 +33,7 @@ export default {
     ...mapGetters(['getUserInfo'])
     },
   computed: {
-    isSignedIn() {
+    isSignedIn: function () {
       return !!this.getUserInfo();
     }
   },

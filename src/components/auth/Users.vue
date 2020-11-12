@@ -2,8 +2,9 @@
   <div>
     <h1>Users List</h1>
     <ul>
-      <li v-for="user in Users" :key="user.id">{{`${user.firstName} ${user.lastName}`}}</li>
+      <li v-for="user in Users" :key="user.uid">{{`${user.firstName} ${user.lastName}`}}</li>
     </ul>
+    <p>{{currentUser}}</p>
   </div>
 </template>
 
@@ -13,12 +14,15 @@ import { mapGetters, mapActions } from 'vuex';
 export default {
   name: 'Users' ,
   methods: {
-    ...mapGetters(['getUsers']),
+    ...mapGetters(['getUsers', 'getUserInfo']),
     ...mapActions(['bindUsers']),
   },
   computed: {
     Users() {
       return this.getUsers();
+    },
+    currentUser() {
+      return this.getUserInfo();
     }
   },
   created() {

@@ -9,15 +9,15 @@ import UsersPage from './pages/UsersPage.vue';
 const router = new VueRouter({
   mode: 'history',
   routes: [
-    { path: '/', component: WorkoutPage, name: 'Home' },
-    { path: '/users', component: UsersPage, name: 'Users' },
+    { path: '/', component: WorkoutPage, name: 'home' },
+    { path: '/users', component: UsersPage, name: 'users' },
     {
       path: '/createAccount',
       component: CreateAccountPage,
-      name: 'Create Account'
+      name: 'createAccount'
     },
-    { path: '/login', component: LoginPage, name: 'Login' },
-    { path: '/ideas', component: IdeasPage, name: 'Ideas' }
+    { path: '/login', component: LoginPage, name: 'login' },
+    { path: '/ideas', component: IdeasPage, name: 'ideas' }
   ]
 });
 
