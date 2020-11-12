@@ -3,25 +3,18 @@ import VueRouter from 'vue-router';
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue';
 import App from './App.vue';
 import store from './store';
-import WorkoutPage from './pages/WorkoutPage.vue';
-import IdeasPage from './pages/IdeasPage.vue';
+import router from './routes';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import './pageStyle.css';
 
+import '@/plugins/firebase';
+
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
-
-export const router = new VueRouter({
-  mode: 'history',
-  routes: [
-    { path: '/', component: WorkoutPage },
-    { path: '/ideas', component: IdeasPage }
-  ]
-});
 
 new Vue({
   router,

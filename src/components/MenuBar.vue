@@ -15,6 +15,9 @@
         <li class="nav-item">
           <router-link class="nav-link" to="/ideas">Ideas</router-link>
         </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/login">Log in</router-link>
+        </li>
       </ul>
     </div>
   </nav>
