@@ -37,7 +37,7 @@ export default new Vuex.Store({
     })
   },
   modules: {
-    workout,
+    workout /* temporary localstorage based */,
     auth
   }
 });

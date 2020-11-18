@@ -14,7 +14,7 @@ import { mapGetters, mapActions } from 'vuex';
 export default {
   name: 'Users' ,
   methods: {
-    ...mapGetters(['getUsers', 'getUserInfo']),
+    ...mapGetters(['getUsers', 'getAuthInfo']),
     ...mapActions(['bindUsers']),
   },
   computed: {
@@ -22,7 +22,7 @@ export default {
       return this.getUsers();
     },
     currentUser() {
-      return this.getUserInfo();
+      return this.getAuthInfo();
     }
   },
   created() {

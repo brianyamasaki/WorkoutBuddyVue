@@ -16,7 +16,7 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'WorkoutList',
-  created: function() {
+  created: function() { 
     this.loadWorkoutList();
   },
   computed: mapGetters(['allWorkoutItems']),

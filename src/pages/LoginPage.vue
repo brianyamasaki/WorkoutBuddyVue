@@ -40,6 +40,8 @@
 
 <script>
 import { mapActions } from 'vuex';
+import firebase from 'firebase/app';
+import router from '../routes';
 
 export default {
   name: 'LoginPage',
@@ -52,11 +54,19 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['signIn']),
+    ...mapActions(['signIn', 'setUserInfo']),
     onSubmit(evt) {
       evt.preventDefault();
       this.signIn(this.form);
     }
+  },
+  mounted: function() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.setUserInfo(user);
+      if (user) {
+        router.push('/account');
+      }
+    })
   }
 }
 </script>

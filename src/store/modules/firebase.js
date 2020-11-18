@@ -11,7 +11,7 @@ const state = () => ({
 
 const getters = {
   getAuthToken: (state) => state.authToken,
-  getUserInfo: (state) => state.userInfo,
+  getAuthInfo: (state) => state.userInfo,
   getErrorMessage: (state) => state.errorMessage
 };
 const mutations = {

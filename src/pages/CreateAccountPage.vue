@@ -86,7 +86,7 @@ export default {
     }
   },
   methods: {
-    ...mapGetters(['getUserInfo', 'getUserErrorMessage']),
+    ...mapGetters(['getAuthInfo', 'getUserErrorMessage']),
     ...mapActions(['createAccount', 'addToUserTable']),
     errorMessage() {
       const msg = this.getUserErrorMessage();
@@ -106,6 +106,9 @@ export default {
       .auth()
       .onAuthStateChanged(user => {
         if (user && this.submitted && !this.getUserErrorMessage()) {
+          user.updateProfile({
+            displayName: `${this.form.firstName} ${this.form.lastName}`
+          })
           this.addToUserTable({
             uid: user.uid,
             email: user.email,
