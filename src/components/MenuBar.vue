@@ -15,17 +15,42 @@
         <li class="nav-item">
           <router-link class="nav-link" to="/ideas">Ideas</router-link>
         </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/account">Account</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/workouts">Workouts</router-link>
+        </li>
       </ul>
+      <b-button v-if="isSignedIn" @click="signOut" class="pull-right">Sign Out</b-button>
+      <router-link v-else class="nav-link pull-right" to="/login">Sign in</router-link>
     </div>
   </nav>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+import firebase from 'firebase/app';
+
 export default {
   props: {
     brand: String
   },
-  name: 'MenuBar'
+  data: function () {
+    return {
+      isSignedIn: false
+    }
+  },
+  methods: {
+    ...mapActions(['signOut']),
+    ...mapGetters(['getAuthInfo'])
+    },
+  name: 'MenuBar',
+  mounted: function() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.isSignedIn = !!user;
+    })
+  }
 }
 </script>
 
