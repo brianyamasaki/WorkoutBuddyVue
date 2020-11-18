@@ -17,7 +17,8 @@ const ideas = [
   'different workouts per day of week',
   'calendar to record workouts completed',
   'integration with calendar apps',
-  'allow login and server storage'
+  'allow login and server storage',
+  'add a streak feature/point system'
 ];
 
 export default {
