@@ -21,20 +21,20 @@ export default new Vuex.Store({
   actions: {
     bindUsers: firestoreAction(({ bindFirestoreRef }) => {
       return bindFirestoreRef('users', db.collection('users'));
-    }),
-    addUser: firestoreAction((context, payload) => {
-      return db.collection('users').add(payload);
-    }),
-    deleteUser: firestoreAction((context, payload) => {
-      db.collection('users')
-        .doc(payload)
-        .delete();
-    }),
-    updateNote: firestoreAction((context, payload) => {
-      db.collection('users')
-        .doc(payload.id)
-        .set(payload);
     })
+    // addUser: firestoreAction((context, payload) => {
+    //   return db.collection('users').add(payload);
+    // }),
+    // deleteUser: firestoreAction((context, payload) => {
+    //   db.collection('users')
+    //     .doc(payload)
+    //     .delete();
+    // }),
+    // updateNote: firestoreAction((context, payload) => {
+    //   db.collection('users')
+    //     .doc(payload.id)
+    //     .set(payload);
+    // })
   },
   modules: {
     workout /* temporary localstorage based */,
