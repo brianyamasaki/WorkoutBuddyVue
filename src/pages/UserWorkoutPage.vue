@@ -1,24 +1,27 @@
 <template>
   <div>
-    <h3>{{workout.description</h3>
+    <h3>{{ workout && workout.description }}</h3>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'UserWorkoutPage',
-  data: function() {
+  name: "UserWorkoutPage",
+  data: function () {
     return {
-      workout: {}
-    }
+      workout: {},
+    };
   },
   methods: {
-    ...mapGetters(['getWorkout'])
+    ...mapGetters(["getWorkouts"]),
   },
-  mounted: function() {
-    this.workouts = this.getWorkout(this.$route.id);
-  }
-}
+  mounted: function () {
+    const workouts = this.getWorkouts();
+    this.workout = workouts.find(
+      (workout) => workout.id === parseInt(this.$route.params.id, 10)
+    );
+  },
+};
 </script>

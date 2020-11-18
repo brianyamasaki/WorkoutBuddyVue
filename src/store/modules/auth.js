@@ -69,7 +69,8 @@ const getters = {
     return state.workouts.filter((workout) => workout.type != 'template');
   },
   getWorkout: (state) => (id) => {
-    return state.workouts.filter((workout) => workout.id === id);
+    console.log('in getWorkout id= ', id);
+    return state.workouts.find((workout) => workout.id === id);
   }
 };
 
@@ -141,6 +142,7 @@ const actions = {
       .then(() => {
         commit('setAuthError', '');
         commit('setAuth', null);
+        commit('setWorkouts', []);
         router.push('login');
       })
       .catch((error) => {

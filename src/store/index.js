@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
+import createPersistedState from 'vuex-persistedstate';
 
 import { vuexfireMutations, firestoreAction } from 'vuexfire';
 import workout from './modules/workout';
@@ -12,6 +13,7 @@ export default new Vuex.Store({
   state: {
     users: []
   },
+  plugins: [createPersistedState()],
   getters: {
     getUsers(state) {
       return state.users;
