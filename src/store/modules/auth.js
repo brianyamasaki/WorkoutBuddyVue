@@ -43,7 +43,12 @@ const commitUser = (commit, user) => {
 
         collectionRef.get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            workouts.push(doc.data());
+            const workout = doc.data();
+            workout.id = doc.id;
+            if (!workout.exercises) {
+              workout.exercises = [getEmptyExercise()];
+            }
+            workouts.push(workout);
           });
           commit('setWorkouts', workouts);
         });
@@ -67,10 +72,6 @@ const getters = {
   },
   getWorkouts: (state) => {
     return state.workouts.filter((workout) => workout.type != 'template');
-  },
-  getWorkout: (state) => (id) => {
-    console.log('in getWorkout id= ', id);
-    return state.workouts.find((workout) => workout.id === id);
   }
 };
 
@@ -142,8 +143,8 @@ const actions = {
       .then(() => {
         commit('setAuthError', '');
         commit('setAuth', null);
-        commit('setWorkouts', []);
-        router.push('login');
+        commit('setUser', null);
+        router.push('/login');
       })
       .catch((error) => {
         commit('setAuthError', error.message);
@@ -168,16 +169,10 @@ const actions = {
   addWorkoutExercise({ commit }) {
     commit('addExercise');
   },
-  saveWorkout({ state }) {
-    db.collection('users')
-      .doc(state.auth.uid)
-      .get()
-      .then((user) => {
-        user.ref
-          .collection('workouts')
-          .doc('template')
-          .set(this.workouts[0]);
-      });
+  saveWorkout({ state }, id) {
+    const workout = state.workouts.find((workout) => workout.id === id);
+    const workoutRef = db.collection(`users/${state.auth.uid}/workouts`);
+    workoutRef.doc(id).set(workout);
   }
 };
 
