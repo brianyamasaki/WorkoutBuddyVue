@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
+import createPersistedState from 'vuex-persistedstate';
 
 import { vuexfireMutations, firestoreAction } from 'vuexfire';
 import workout from './modules/workout';
@@ -12,6 +13,7 @@ export default new Vuex.Store({
   state: {
     users: []
   },
+  plugins: [createPersistedState()],
   getters: {
     getUsers(state) {
       return state.users;
@@ -21,20 +23,20 @@ export default new Vuex.Store({
   actions: {
     bindUsers: firestoreAction(({ bindFirestoreRef }) => {
       return bindFirestoreRef('users', db.collection('users'));
-    }),
-    addUser: firestoreAction((context, payload) => {
-      return db.collection('users').add(payload);
-    }),
-    deleteUser: firestoreAction((context, payload) => {
-      db.collection('users')
-        .doc(payload)
-        .delete();
-    }),
-    updateNote: firestoreAction((context, payload) => {
-      db.collection('users')
-        .doc(payload.id)
-        .set(payload);
     })
+    // addUser: firestoreAction((context, payload) => {
+    //   return db.collection('users').add(payload);
+    // }),
+    // deleteUser: firestoreAction((context, payload) => {
+    //   db.collection('users')
+    //     .doc(payload)
+    //     .delete();
+    // }),
+    // updateNote: firestoreAction((context, payload) => {
+    //   db.collection('users')
+    //     .doc(payload.id)
+    //     .set(payload);
+    // })
   },
   modules: {
     workout /* temporary localstorage based */,

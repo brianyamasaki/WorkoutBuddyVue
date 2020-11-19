@@ -8,6 +8,7 @@ import UsersPage from './pages/UsersPage.vue';
 import UserAccountPage from './pages/UserAccountPage.vue';
 import UserWorkoutsPage from './pages/UserWorkoutsPage.vue';
 import UserWorkoutPage from './pages/UserWorkoutPage.vue';
+import NotFoundPage from './pages/404Page.vue';
 
 const router = new VueRouter({
   mode: 'history',
@@ -23,7 +24,8 @@ const router = new VueRouter({
     { path: '/workouts', component: UserWorkoutsPage, name: 'userWorkouts' },
     { path: '/workouts/:id', component: UserWorkoutPage, name: 'userWorkout' },
     { path: '/login', component: LoginPage, name: 'login' },
-    { path: '/ideas', component: IdeasPage, name: 'ideas' }
+    { path: '/ideas', component: IdeasPage, name: 'ideas' },
+    { path: '*', component: NotFoundPage, name: 'notFoundPage' }
   ]
 });
 
