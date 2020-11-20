@@ -172,7 +172,7 @@ const actions = {
   saveWorkout({ state }, id) {
     const workout = state.workouts.find((workout) => workout.id === id);
     const workoutRef = db.collection(`users/${state.auth.uid}/workouts`);
-    workoutRef.doc(id).set(workout);
+    workoutRef.doc(id).set(workout, { merge: true });
   }
 };
 
