@@ -31,8 +31,14 @@
       <hr />
       <p>
         New to Workout Buddy?
-        <router-link id="btnCreate" to="/createAccount" class="btn btn-primary"
+        <router-link to="/createAccount" class="btn btn-primary btnSupport"
           >Create an account</router-link
+        >
+      </p>
+      <p>
+        Forgot your password?
+        <router-link to="/resetPassword" class="btn btn-primary btnSupport"
+          >Reset your password</router-link
         >
       </p>
     </div>
@@ -80,7 +86,7 @@ export default {
 </script>
 
 <style scoped>
-#btnCreate {
+.btnSupport {
   margin-left: 0.5em;
 }
 </style>
