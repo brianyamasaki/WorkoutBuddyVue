@@ -31,29 +31,36 @@ const defaultWorkout = () => {
   };
 };
 
-const commitUser = (commit, user) => {
-  if (user) {
-    const workouts = [];
-    db.collection('users')
-      .doc(user.uid)
-      .get()
-      .then((doc) => {
-        commit('setUser', doc.exists ? doc.data() : null);
-        const collectionRef = doc.ref.collection('workouts');
+const authStateChange = (auth, commit) => {
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      const workouts = [];
+      db.collection('users')
+        .doc(user.uid)
+        .get()
+        .then((doc) => {
+          commit('setUser', doc.exists ? doc.data() : null);
+          const collectionRef = doc.ref.collection('workouts');
 
-        collectionRef.get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const workout = doc.data();
-            workout.id = doc.id;
-            if (!workout.exercises) {
-              workout.exercises = [getEmptyExercise()];
-            }
-            workouts.push(workout);
+          collectionRef.get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              const workout = doc.data();
+              workout.id = doc.id;
+              if (!workout.exercises) {
+                workout.exercises = [getEmptyExercise()];
+              }
+              workouts.push(workout);
+            });
+            commit('setWorkouts', workouts);
           });
-          commit('setWorkouts', workouts);
         });
-      });
-  }
+    } else {
+      commit('setAuth', null);
+      commit('setUser', null);
+      commit('setWorkouts', []);
+      commit('setAuthError', null);
+    }
+  });
 };
 
 const state = () => ({
@@ -99,16 +106,12 @@ const mutations = {
 const actions = {
   createAccount({ commit }, { email, password }) {
     const auth = firebase.auth();
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        commitUser(commit, user);
-      }
-    });
+    authStateChange(auth, commit);
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
         Vue.nextTick(() => {
-          router.push('/account');
+          router.push('/workouts');
         });
       })
       .catch((error) => {
@@ -119,16 +122,12 @@ const actions = {
   },
   signIn({ commit }, { email, password }) {
     const auth = firebase.auth();
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        commitUser(commit, user);
-      }
-    });
+    authStateChange(auth, commit);
     auth
       .signInWithEmailAndPassword(email, password)
       .then(() => {
         Vue.nextTick(() => {
-          router.push('/account');
+          router.push('/workouts');
         });
       })
       .catch((error) => {
@@ -141,9 +140,6 @@ const actions = {
       .auth()
       .signOut()
       .then(() => {
-        commit('setAuthError', '');
-        commit('setAuth', null);
-        commit('setUser', null);
         router.push('/login');
       })
       .catch((error) => {
@@ -163,6 +159,12 @@ const actions = {
         });
     }
   },
+  resetAuthError({ commit }) {
+    commit('setAuthError', null);
+  },
+  sendPasswordReset(context, email) {
+    return firebase.auth().sendPasswordResetEmail(email);
+  },
   setUserInfo({ commit }, auth) {
     commit('setAuth', auth);
   },
@@ -172,7 +174,7 @@ const actions = {
   saveWorkout({ state }, id) {
     const workout = state.workouts.find((workout) => workout.id === id);
     const workoutRef = db.collection(`users/${state.auth.uid}/workouts`);
-    workoutRef.doc(id).set(workout);
+    workoutRef.doc(id).set(workout, { merge: true });
   }
 };
 
