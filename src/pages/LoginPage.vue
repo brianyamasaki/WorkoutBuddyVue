@@ -24,6 +24,9 @@
         <div class="text-center">
           <b-button type="submit" variant="primary">Log In</b-button>
         </div>
+        <b-alert :show="showError" variant="danger">
+          {{ errorMessage }}
+        </b-alert>
       </b-form>
       <hr />
       <p>
@@ -37,9 +40,8 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import firebase from "firebase/app";
-import router from "../routes";
 
 export default {
   name: "LoginPage",
@@ -51,8 +53,18 @@ export default {
       },
     };
   },
+  computed: {
+    showError() {
+      return this.getUserErrorMessage() ? true : false;
+    },
+    errorMessage() {
+      const msg = this.getUserErrorMessage();
+      return msg;
+    },
+  },
   methods: {
-    ...mapActions(["signIn", "setUserInfo"]),
+    ...mapGetters(["getUserErrorMessage"]),
+    ...mapActions(["signIn", "setUserInfo", "resetAuthError"]),
     onSubmit(evt) {
       evt.preventDefault();
       this.signIn(this.form);
@@ -61,10 +73,8 @@ export default {
   mounted: function () {
     firebase.auth().onAuthStateChanged((user) => {
       this.setUserInfo(user);
-      if (user) {
-        router.push("/account");
-      }
     });
+    this.resetAuthError();
   },
 };
 </script>
