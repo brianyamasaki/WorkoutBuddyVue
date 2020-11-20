@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import WorkoutPage from './pages/WorkoutPage.vue';
 import CreateAccountPage from './pages/CreateAccountPage.vue';
 import LoginPage from './pages/LoginPage.vue';
+import LostPasswordPage from './pages/LostPasswordPage.vue';
 import IdeasPage from './pages/IdeasPage.vue';
 import UsersPage from './pages/UsersPage.vue';
 import UserWorkoutsPage from './pages/UserWorkoutsPage.vue';
@@ -18,6 +19,11 @@ const router = new VueRouter({
       path: '/createAccount',
       component: CreateAccountPage,
       name: 'createAccount'
+    },
+    {
+      path: '/resetPassword',
+      component: LostPasswordPage,
+      name: 'resetPassword'
     },
     { path: '/workouts', component: UserWorkoutsPage, name: 'userWorkouts' },
     { path: '/workouts/:id', component: UserWorkoutPage, name: 'userWorkout' },

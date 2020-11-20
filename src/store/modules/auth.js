@@ -162,6 +162,9 @@ const actions = {
   resetAuthError({ commit }) {
     commit('setAuthError', null);
   },
+  sendPasswordReset(context, email) {
+    return firebase.auth().sendPasswordResetEmail(email);
+  },
   setUserInfo({ commit }, auth) {
     commit('setAuth', auth);
   },
