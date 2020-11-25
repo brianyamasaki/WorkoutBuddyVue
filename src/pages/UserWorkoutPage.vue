@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h3>{{ workout.description }}</h3>
+    <h3>{{ workout.title }}</h3>
+    <p>{{ workout.description }}</p>
     <Exercises :exercises="workout.exercises" :workoutId="workout.id" />
   </div>
 </template>

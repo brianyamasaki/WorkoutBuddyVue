@@ -25,7 +25,7 @@
         <li class="nav-item">
           <router-link class="nav-link" to="/ideas">Ideas</router-link>
         </li>
-        <li class="nav-item">
+        <li v-if="isSignedIn" class="nav-item">
           <router-link class="nav-link" to="/workouts">Workouts</router-link>
         </li>
       </ul>

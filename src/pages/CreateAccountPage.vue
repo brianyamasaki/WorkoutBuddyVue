@@ -51,7 +51,7 @@
         </div>
       </b-form>
       <b-alert :show="showError" variant="danger">
-        {{ errorMessage() }}
+        {{ errorMessage }}
       </b-alert>
     </div>
   </div>
@@ -79,15 +79,15 @@ export default {
       return this.form.password.length > 6 ? true : false;
     },
     showError() {
-      return this.getUserErrorMessage() ? true : false;
+      return this.getAuthErrorMessage() ? true : false;
+    },
+    errorMessage() {
+      return this.getAuthErrorMessage();
     },
   },
   methods: {
-    ...mapGetters(["getAuthInfo", "getUserErrorMessage"]),
+    ...mapGetters(["getAuthInfo", "getAuthErrorMessage"]),
     ...mapActions(["createAccount", "addToUserTable", "resetAuthError"]),
-    errorMessage() {
-      return this.getUserErrorMessage();
-    },
     onSubmit(evt) {
       evt.preventDefault();
       if (this.passwordState) {
@@ -98,7 +98,7 @@ export default {
   },
   mounted: function () {
     firebase.auth().onAuthStateChanged((user) => {
-      if (user && this.submitted && !this.getUserErrorMessage()) {
+      if (user && this.submitted && !this.getAuthErrorMessage()) {
         user.updateProfile({
           displayName: `${this.form.firstName} ${this.form.lastName}`,
         });
