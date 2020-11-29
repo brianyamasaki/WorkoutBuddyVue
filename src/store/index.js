@@ -16,7 +16,11 @@ export default new Vuex.Store({
   },
   plugins: [createPersistedState()],
   getters: {
-    getWorkouts: (state) => state.workouts
+    getWorkouts: (state) => state.workouts,
+    getWorkout: (state) => (workoutId) => {
+      console.log(workoutId);
+      return state.workouts.find((workout) => workout.id === workoutId);
+    }
   },
   mutations: {
     ...vuexfireMutations,

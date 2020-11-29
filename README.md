@@ -45,3 +45,9 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - calendar to record workouts completed
 - integration with calendar apps
 - allow login and server storage
+
+## Data assumptions
+
+- Users can have a list of Workouts
+- Workouts consist of a title, description, and a list of exercises
+- Exercises consist of a description, sets, reps and weight

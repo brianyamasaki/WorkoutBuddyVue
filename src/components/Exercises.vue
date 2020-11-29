@@ -8,6 +8,7 @@
         :workoutItem="item"
         :editable="editable"
         :titleLine="false"
+        :workoutId="workoutId"
       />
     </ul>
     <button
@@ -43,6 +44,7 @@ export default {
     ...mapActions(["addWorkoutExercise", "saveWorkout"]),
     addExercise() {
       this.addWorkoutExercise(this.workoutId);
+      this.changed = true;
     },
     toggleEditable() {
       this.editable = !this.editable;
@@ -54,6 +56,7 @@ export default {
   data: function () {
     return {
       editable: false,
+      changed: false,
     };
   },
   components: {

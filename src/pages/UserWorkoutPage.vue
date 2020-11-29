@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3>{{ workout.title }}</h3>
-    <p>{{ workout.description }}</p>
-    <Exercises :exercises="workout.exercises" :workoutId="workout.id" />
+    <h3>{{ workoutTitle }}</h3>
+    <p>{{ workoutDescription }}</p>
+    <Exercises :exercises="workoutExercises" :workoutId="workoutId" />
   </div>
 </template>
 
@@ -14,11 +14,32 @@ export default {
   name: "UserWorkoutPage",
   data: function () {
     return {
-      workout: {
-        description: "",
-        exercises: [],
-      },
+      workoutIndex: null,
     };
+  },
+  computed: {
+    workoutTitle() {
+      if (!this.workout) {
+        return "";
+      }
+      return this.workout.title || "";
+    },
+    workoutDescription() {
+      if (!this.workout) {
+        return "";
+      }
+      return this.workout.description || "";
+    },
+    workoutExercises() {
+      return !this.workout ? [] : this.workout.exercises;
+    },
+    workoutId() {
+      return !this.workout ? "" : this.workout.id;
+    },
+    workout() {
+      const workouts = this.getWorkouts();
+      return workouts[this.workoutIndex];
+    },
   },
   methods: {
     ...mapGetters(["getWorkouts"]),
@@ -26,7 +47,9 @@ export default {
   mounted: function () {
     const workoutId = this.$route.params.id;
     const workouts = this.getWorkouts();
-    this.workout = workouts.find((workout) => workout.id === workoutId);
+    this.workoutIndex = workouts.findIndex(
+      (workout) => workout.id === workoutId
+    );
   },
   components: {
     Exercises,

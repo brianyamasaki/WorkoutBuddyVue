@@ -1,5 +1,6 @@
 import { db } from '../../plugins/firebase';
 
+// Basic, empty exercise
 const getEmptyExercise = () => {
   return {
     id: 0,
@@ -10,6 +11,7 @@ const getEmptyExercise = () => {
   };
 };
 
+// search through exercise list and find an ID number that isn't currently used
 export const nextListId = (list) => {
   let maxId = 0;
   for (const item of list) {
@@ -20,6 +22,7 @@ export const nextListId = (list) => {
   return maxId + 1;
 };
 
+// This is an empty, basic workout with a single, empty exercise
 export const defaultWorkout = () => {
   return {
     description: '',
@@ -28,30 +31,57 @@ export const defaultWorkout = () => {
   };
 };
 
+// Action - Add an empty exercise to a workout
 const addWorkoutExercise = ({ commit }, workoutId) => {
   commit('addExercise', workoutId);
 };
 
+// Action - Remove a specific workout from a specific workout
+const removeWorkoutExercise = (
+  { commit, state },
+  { workoutId, exerciseId }
+) => {
+  // iterate through workouts until we find the target work
+  // then filter through exercises and create a new
+  // array with the exercises excluding the passed in exerciseId
+  const workouts = state.workouts.map((workout) => {
+    if (workout.id !== workoutId) {
+      return workout;
+    }
+    const { exercises } = workout;
+    workout.exercises = exercises.filter(
+      (exercise) => exercise.id !== exerciseId
+    );
+    return workout;
+  });
+  commit('setWorkouts', workouts);
+};
+
+// Action - Save specific workout from state.workouts out to the external Database
 const saveWorkout = ({ state }, workoutId) => {
-  const workout = state.workouts.find((workout) => workout.id === workoutId);
+  const workout = findWorkout(state, workoutId);
   const workoutRef = db.collection(`users/${state.auth.auth.uid}/workouts`);
   workoutRef.doc(workoutId).set(workout, { merge: true });
 };
 
-const addNewWorkout = ({ commit }, workout) => {
-  commit('addWorkout', workout);
+// Action - Create a new empty workout with given fields given in the workout payload
+const addNewWorkout = ({ commit }, payload) => {
+  commit('addWorkout', payload);
 };
 
 export const workoutActions = {
   addWorkoutExercise,
+  removeWorkoutExercise,
   saveWorkout,
   addNewWorkout
 };
 
+// Mutator - Atomic action to modify state.workouts
 const setWorkouts = (state, workouts) => {
   state.workouts = workouts;
 };
 
+// Mutator - Atomic action to modify state.workouts to add Exercise
 const addExercise = (state, workoutId) => {
   const workout = state.workouts.find((workout) => workoutId === workout.id);
   if (workout) {
@@ -61,6 +91,8 @@ const addExercise = (state, workoutId) => {
   }
 };
 
+// Mutator - Atomic action to add workout to list of workouts
+// Note that state.workouts will get automatically updated by Firestore's bindUser binding
 const addWorkout = (state, workout) => {
   const newWorkout = {
     ...defaultWorkout(),
@@ -73,4 +105,8 @@ export const workoutMutations = {
   setWorkouts,
   addExercise,
   addWorkout
+};
+
+const findWorkout = (state, workoutId) => {
+  return state.workouts.find((workout) => workoutId === workout.id);
 };

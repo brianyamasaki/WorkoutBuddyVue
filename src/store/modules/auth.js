@@ -2,6 +2,9 @@ import firebase from 'firebase/app';
 import router from '../../routes';
 import { db } from '../../plugins/firebase';
 
+// This creates a function that always gets called whenever Firebase authentication
+// changes. fbAuth will be null when signed off and fbAuth will have a Firebase Auth
+// object when a user signs in
 const authStateChange = (fbAuth, commit) => {
   fbAuth.onAuthStateChanged((auth) => {
     if (auth) {
