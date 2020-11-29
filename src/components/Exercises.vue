@@ -8,17 +8,18 @@
         :workoutItem="item"
         :editable="editable"
         :titleLine="false"
+        :workoutId="workoutId"
       />
     </ul>
     <button
       v-if="editable"
       class="btn btn-secondary btn-lg"
-      @click="addWorkoutExercise"
+      @click="addExercise"
     >
       Add
     </button>
     <button class="btn btn-secondary btn-lg" @click="toggleEditable">
-      {{ editableBtnText() }}
+      {{ editableBtnText }}
     </button>
     <button class="btn btn-secondary btn-lg" @click="save">Save</button>
   </div>
@@ -34,13 +35,19 @@ export default {
     exercises: Array,
     workoutId: String,
   },
-  methods: {
-    ...mapActions(["addWorkoutExercise", "saveWorkout"]),
-    toggleEditable() {
-      this.editable = !this.editable;
-    },
+  computed: {
     editableBtnText() {
       return this.editable ? "View Workout" : "Edit Workout";
+    },
+  },
+  methods: {
+    ...mapActions(["addWorkoutExercise", "saveWorkout"]),
+    addExercise() {
+      this.addWorkoutExercise(this.workoutId);
+      this.changed = true;
+    },
+    toggleEditable() {
+      this.editable = !this.editable;
     },
     save() {
       this.saveWorkout(this.workoutId);
@@ -49,6 +56,7 @@ export default {
   data: function () {
     return {
       editable: false,
+      changed: false,
     };
   },
   components: {

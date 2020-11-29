@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-md fixed-top">
-    <router-link class="navbar-brand" to="/">
+    <router-link class="navbar-brand" to="/" exact>
       {{ brand }}
     </router-link>
     <button
@@ -18,15 +18,15 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <router-link class="nav-link" to="/"
-            >Home <span class="sr-only">(current)</span></router-link
+          <router-link class="nav-link" to="/" exact> Home </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/ideas" exact>Ideas</router-link>
+        </li>
+        <li v-if="isSignedIn" class="nav-item">
+          <router-link class="nav-link" to="/workouts" exact
+            >Workouts</router-link
           >
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/ideas">Ideas</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/workouts">Workouts</router-link>
         </li>
       </ul>
       <b-button v-if="isSignedIn" @click="signOut" class="pull-right"
@@ -68,5 +68,8 @@ export default {
 <style scoped>
 .nav-link {
   color: black;
+}
+.router-link-active {
+  font-weight: 700;
 }
 </style>

@@ -1,64 +1,32 @@
-import Vue from 'vue';
 import firebase from 'firebase/app';
 import router from '../../routes';
 import { db } from '../../plugins/firebase';
 
-const getEmptyExercise = () => {
-  return {
-    id: 0,
-    description: '',
-    sets: 0,
-    reps: 0,
-    weight: 40
-  };
-};
-
-function nextListId(list) {
-  let maxId = 0;
-  for (const item of list) {
-    if (item.id > maxId) {
-      maxId = item.id;
-    }
-  }
-  return maxId + 1;
-}
-
-const defaultWorkout = () => {
-  return {
-    description: '',
-    type: '',
-    exercises: [getEmptyExercise()]
-  };
-};
-
-const authStateChange = (auth, commit) => {
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      const workouts = [];
+// This creates a function that always gets called whenever Firebase authentication
+// changes. fbAuth will be null when signed off and fbAuth will have a Firebase Auth
+// object when a user signs in
+const authStateChange = (fbAuth, commit) => {
+  fbAuth.onAuthStateChanged((auth) => {
+    if (auth) {
+      commit('setAuthError', '');
+      commit('setAuth', auth);
       db.collection('users')
-        .doc(user.uid)
+        .doc(auth.uid)
         .get()
-        .then((doc) => {
-          commit('setUser', doc.exists ? doc.data() : null);
-          const collectionRef = doc.ref.collection('workouts');
-
-          collectionRef.get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              const workout = doc.data();
-              workout.id = doc.id;
-              if (!workout.exercises) {
-                workout.exercises = [getEmptyExercise()];
-              }
-              workouts.push(workout);
-            });
-            commit('setWorkouts', workouts);
-          });
+        .then((userDoc) => {
+          commit('setUser', userDoc.exists ? userDoc.data() : null);
+          if (router.currentRoute !== '/workouts') {
+            router.push('/workouts');
+          }
         });
     } else {
       commit('setAuth', null);
       commit('setUser', null);
+      commit('setAuthError', '');
       commit('setWorkouts', []);
-      commit('setAuthError', null);
+      if (router.currentRoute !== '/login') {
+        router.push('/login');
+      }
     }
   });
 };
@@ -66,82 +34,49 @@ const authStateChange = (auth, commit) => {
 const state = () => ({
   auth: null /* user data from firebase */,
   user: null /* user data from user table */,
-  workouts: [defaultWorkout()],
-  errorMessage: ''
+  authErrorMsg: ''
 });
 
 const getters = {
   getAuthInfo: (state) => state.auth,
   getUserInfo: (state) => state.user,
-  getUserErrorMessage: (state) => state.errorMessage,
-  getTemplateWorkout: (state) => {
-    return state.workouts.filter((workout) => workout.type === 'template');
-  },
-  getWorkouts: (state) => {
-    return state.workouts.filter((workout) => workout.type != 'template');
-  }
+  getAuthErrorMessage: (state) => state.authErrorMsg
 };
 
 const mutations = {
   setAuth(state, auth) {
     state.auth = auth;
   },
-  setAuthError(state, errorMessage) {
-    state.errorMessage = errorMessage;
+  setAuthError(state, authErrorMsg) {
+    state.authErrorMsg = authErrorMsg;
   },
   setUser(state, user) {
     state.user = user;
-  },
-  setWorkouts(state, workouts) {
-    state.workouts = workouts;
-  },
-  addExercise(state) {
-    const workout = state.workouts[0];
-    const newExercise = getEmptyExercise();
-    newExercise.id = nextListId(workout.exercises);
-    workout.exercises.push(newExercise);
   }
 };
 
 const actions = {
   createAccount({ commit }, { email, password }) {
-    const auth = firebase.auth();
-    authStateChange(auth, commit);
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        Vue.nextTick(() => {
-          router.push('/workouts');
-        });
-      })
-      .catch((error) => {
-        console.log(error.message);
-        commit('setAuthError', error.message);
-        commit('setAuth', null);
-      });
+    const fbAuth = firebase.auth();
+    authStateChange(fbAuth, commit);
+    fbAuth.createUserWithEmailAndPassword(email, password).catch((error) => {
+      console.log(error.message);
+      commit('setAuthError', error.message);
+      commit('setAuth', null);
+    });
   },
   signIn({ commit }, { email, password }) {
-    const auth = firebase.auth();
-    authStateChange(auth, commit);
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        Vue.nextTick(() => {
-          router.push('/workouts');
-        });
-      })
-      .catch((error) => {
-        commit('setAuthError', error.message);
-        commit('setAuth', null);
-      });
+    const fbAuth = firebase.auth();
+    authStateChange(fbAuth, commit);
+    fbAuth.signInWithEmailAndPassword(email, password).catch((error) => {
+      commit('setAuthError', error.message);
+      commit('setAuth', null);
+    });
   },
   signOut({ commit }) {
     firebase
       .auth()
       .signOut()
-      .then(() => {
-        router.push('/login');
-      })
       .catch((error) => {
         commit('setAuthError', error.message);
       });
@@ -167,14 +102,6 @@ const actions = {
   },
   setUserInfo({ commit }, auth) {
     commit('setAuth', auth);
-  },
-  addWorkoutExercise({ commit }) {
-    commit('addExercise');
-  },
-  saveWorkout({ state }, id) {
-    const workout = state.workouts.find((workout) => workout.id === id);
-    const workoutRef = db.collection(`users/${state.auth.uid}/workouts`);
-    workoutRef.doc(id).set(workout, { merge: true });
   }
 };
 

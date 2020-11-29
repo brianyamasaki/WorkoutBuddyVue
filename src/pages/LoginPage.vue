@@ -24,7 +24,7 @@
         <div class="text-center">
           <b-button type="submit" variant="primary">Log In</b-button>
         </div>
-        <b-alert :show="showError" variant="danger">
+        <b-alert :show="showError" :[disabled]="disabled" variant="danger">
           {{ errorMessage }}
         </b-alert>
       </b-form>
@@ -47,7 +47,6 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import firebase from "firebase/app";
 
 export default {
   name: "LoginPage",
@@ -57,30 +56,33 @@ export default {
         email: "",
         password: "",
       },
+      loading: false,
     };
   },
   computed: {
     showError() {
-      return this.getUserErrorMessage() ? true : false;
+      return this.getAuthErrorMessage() ? true : false;
     },
     errorMessage() {
-      const msg = this.getUserErrorMessage();
+      const msg = this.getAuthErrorMessage();
       return msg;
+    },
+    disabled() {
+      return this.loading ? "disabled" : "fakedisabled";
     },
   },
   methods: {
-    ...mapGetters(["getUserErrorMessage"]),
+    ...mapGetters(["getAuthErrorMessage"]),
     ...mapActions(["signIn", "setUserInfo", "resetAuthError"]),
     onSubmit(evt) {
       evt.preventDefault();
+      this.loading = true;
       this.signIn(this.form);
     },
   },
   mounted: function () {
-    firebase.auth().onAuthStateChanged((user) => {
-      this.setUserInfo(user);
-    });
     this.resetAuthError();
+    this.loading = false;
   },
 };
 </script>
