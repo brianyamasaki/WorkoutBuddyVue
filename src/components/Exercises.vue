@@ -6,28 +6,26 @@
         v-for="item in exercises"
         :key="item.id"
         :workoutItem="item"
-        :editable="editable"
+        :editable="isEditing"
         :titleLine="false"
         :workoutId="workoutId"
       />
     </ul>
-    <button
-      v-if="editable"
-      class="btn btn-secondary btn-lg"
-      @click="addExercise"
-    >
-      Add
+    <button class="btn btn-lg" :class="btnDynamicClasses" @click="addExercise">
+      <b-icon icon="plus" scale="1.9"></b-icon>
     </button>
-    <button class="btn btn-secondary btn-lg" @click="toggleEditable">
-      {{ editableBtnText }}
+    <button class="btn btn-lg btn-primary" @click="toggleEditable">
+      <b-icon icon="pencil-fill" :class="{ 'editable-color': isEditing }" />
     </button>
-    <button class="btn btn-secondary btn-lg" @click="save">Save</button>
+    <button class="btn btn-lg" :class="btnDynamicClasses" @click="save">
+      Save
+    </button>
   </div>
 </template>
 
 <script>
 import WorkoutLine from "./WorkoutLine.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "Exercises",
@@ -37,17 +35,28 @@ export default {
   },
   computed: {
     editableBtnText() {
-      return this.editable ? "View Workout" : "Edit Workout";
+      return this.isEditingWorkout() ? "View Workout" : "Edit Workout";
+    },
+    btnDynamicClasses() {
+      const editing = this.isEditingWorkout();
+      return {
+        "btn-secondary": !editing,
+        "btn-primary": editing,
+      };
+    },
+    isEditing() {
+      return this.isEditingWorkout();
     },
   },
   methods: {
-    ...mapActions(["addWorkoutExercise", "saveWorkout"]),
+    ...mapGetters(["isEditingWorkout"]),
+    ...mapActions(["addWorkoutExercise", "saveWorkout", "setEditingWorkout"]),
     addExercise() {
       this.addWorkoutExercise(this.workoutId);
       this.changed = true;
     },
     toggleEditable() {
-      this.editable = !this.editable;
+      this.setEditingWorkout(!this.isEditingWorkout());
     },
     save() {
       this.saveWorkout(this.workoutId);
@@ -55,7 +64,6 @@ export default {
   },
   data: function () {
     return {
-      editable: false,
       changed: false,
     };
   },
@@ -72,5 +80,8 @@ ul {
 
 button {
   margin: 0 0.5em;
+}
+.editable-color {
+  color: red;
 }
 </style>

@@ -18,8 +18,15 @@
             required
           />
         </div>
-        <b-form-select v-model="workout.type" :options="options" />
       </div>
+      <b-form-checkbox
+        class="text-center"
+        v-model="workout.type"
+        value="template"
+        unchecked-value="daily"
+      >
+        Template
+      </b-form-checkbox>
       <div class="text-center">
         <button type="submit" class="btn btn-primary">Add Workout</button>
       </div>
@@ -40,12 +47,8 @@ export default {
       workout: {
         title: "",
         description: "",
-        type: "template",
+        type: "daily",
       },
-      options: [
-        { value: "template", text: "Template" },
-        { value: "daily", text: "Actual Workout" },
-      ],
     };
   },
   methods: {
@@ -62,6 +65,9 @@ export default {
 <style scoped>
 .new-workout {
   margin: 1em 0;
+  border: 1px solid #666;
+  border-radius: 1rem;
+  padding: 1rem;
 }
 .flex {
   display: flex;
@@ -83,5 +89,9 @@ select {
 
 button {
   margin: 1em 0 0 0;
+}
+
+.custom-checkbox {
+  margin-top: 0.5rem;
 }
 </style>

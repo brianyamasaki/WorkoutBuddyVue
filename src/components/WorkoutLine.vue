@@ -56,7 +56,7 @@
         class="btn btn-outline-danger"
         @click="removeItem(workoutItem.id)"
       >
-        X
+        <b-icon scale="1.3" icon="slash-circle" />
       </button>
     </div>
   </div>

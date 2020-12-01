@@ -1,48 +1,104 @@
 <template>
   <div>
     <ul>
-      <WorkoutLine :titleLine=true :workoutItem="allWorkoutItems[0]" />
-      <WorkoutLine v-for="item in allWorkoutItems" :key="item.id" :workoutItem="item" :editable="editable" :titleLine=false />
+      <WorkoutLine :titleLine="true" :workoutItem="allWorkoutItems[0]" />
+      <WorkoutLine
+        v-for="item in allWorkoutItems"
+        :key="item.id"
+        :workoutItem="item"
+        :editable="editable"
+        :titleLine="false"
+      />
     </ul>
-    <button class="btn btn-secondary btn-lg" @click="addWorkoutItem">Add</button>
-    <button class="btn btn-secondary btn-lg" @click="toggleEditable">Edit Workout</button>
-    <button class="btn btn-secondary btn-lg" @click="saveWorkoutList">Save</button>
+    <div>
+      <button class="btn btn-lg" :class="btnClass" @click="addWorkoutItem">
+        <b-icon icon="plus" scale="1.9"></b-icon>
+      </button>
+      <button class="btn btn-lg btn-primary" @click="toggleEditable">
+        <b-icon icon="pencil-fill" :class="{ 'editable-color': editable }" />
+      </button>
+      <button class="btn btn-lg" :class="btnClass" @click="saveWorkoutList">
+        Save
+      </button>
+    </div>
+    <button
+      v-if="canTransferWorkout"
+      class="btn btn-lg btn-outline-primary transfer-btn"
+      @click="onClickTransfer"
+    >
+      Transfer Workout to Account
+    </button>
   </div>
 </template>
 
 <script>
-import WorkoutLine from './WorkoutLine.vue'
-import { mapActions, mapGetters } from 'vuex';
+import WorkoutLine from "./WorkoutLine.vue";
+import { mapActions, mapGetters } from "vuex";
+import firebase from "firebase/app";
+import router from "../routes";
 
 export default {
-  name: 'WorkoutList',
-  created: function() { 
+  name: "WorkoutList",
+  created: function () {
     this.loadWorkoutList();
   },
-  computed: mapGetters(['allWorkoutItems']),
+  computed: {
+    ...mapGetters(["allWorkoutItems"]),
+    btnClass() {
+      return {
+        "btn-secondary": !this.editable,
+        "btn-primary": this.editable,
+      };
+    },
+    canTransferWorkout() {
+      return this.allWorkoutItems.length > 0 && this.isSignedIn;
+    },
+  },
   methods: {
-    ...mapActions(['addWorkoutItem', 'loadWorkoutList', 'saveWorkoutList']),
+    ...mapActions([
+      "addWorkoutItem",
+      "loadWorkoutList",
+      "saveWorkoutList",
+      "transferLegacyWorkout",
+    ]),
     toggleEditable() {
       this.editable = !this.editable;
-    }
+    },
+    onClickTransfer() {
+      this.transferLegacyWorkout();
+      router.push("/workouts");
+    },
   },
-  data: function() {
+  data: function () {
     return {
-      editable: false
-    }
+      editable: false,
+      isSignedIn: false,
+    };
+  },
+  mounted: function () {
+    firebase.auth().onAuthStateChanged((user) => {
+      this.isSignedIn = !!user;
+    });
   },
   components: {
-    WorkoutLine
-  }
-}
+    WorkoutLine,
+  },
+};
 </script>
 
 <style scoped>
-  ul {
-    list-style: none;
-  }
+ul {
+  list-style: none;
+}
 
-  button {
-    margin: 0 0.5em;
-  }
+button {
+  margin: 0 0.5em;
+}
+
+.transfer-btn {
+  margin: 1em 0 0 0;
+}
+.editable-color {
+  color: red;
+}
 </style>
