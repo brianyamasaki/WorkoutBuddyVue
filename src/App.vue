@@ -8,14 +8,14 @@
 </template>
 
 <script>
-import MenuBar from './components/MenuBar.vue'
+import MenuBar from "./components/MenuBar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    MenuBar
-  }
-}
+    MenuBar,
+  },
+};
 </script>
 
 <style>
@@ -25,6 +25,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
