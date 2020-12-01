@@ -50,7 +50,7 @@ export default {
 .nav-link {
   color: black;
 }
-.router-link-active {
-  font-weight: 700;
+#workout-buddy-root .router-link-active {
+  color: #007bff;
 }
 </style>

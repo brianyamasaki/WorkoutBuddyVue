@@ -1,14 +1,6 @@
 <template>
   <div>
     <h1>My Workouts</h1>
-    <button
-      v-if="editable"
-      class="btn btn-secondary btn-med"
-      @click="toggleShowForm"
-    >
-      New Workout
-    </button>
-    <NewWorkoutForm v-if="showForm" :fnDone="toggleShowForm" />
     <h3 v-if="loading">Loading...</h3>
     <ul v-else class="text-left">
       <li v-for="workout in workouts" :key="workout.id" :workout="workout">
@@ -24,12 +16,23 @@
       </li>
     </ul>
     <button
-      v-if="!showForm"
-      class="btn btn-secondary btn-med"
-      @click="toggleEditable"
+      v-if="editable"
+      class="btn btn-primary btn-med"
+      @click="toggleShowForm"
+      v-b-tooltip.hover
+      title="Add New Workout"
     >
-      {{ editBtnText }}
+      <b-icon icon="plus" scale="1.9"></b-icon>
     </button>
+    <button
+      class="btn btn-primary btn-med"
+      @click="toggleEditable"
+      v-b-tooltip.hover
+      :title="editTooltip"
+    >
+      <b-icon icon="pencil-fill" :class="{ 'editable-color': editable }" />
+    </button>
+    <NewWorkoutForm v-if="showForm && editable" :fnDone="toggleShowForm" />
   </div>
 </template>
 
@@ -50,8 +53,8 @@ export default {
     workouts() {
       return this.getWorkouts();
     },
-    editBtnText() {
-      return this.editable ? "View" : "Edit";
+    editTooltip() {
+      return this.editable ? "View Workouts" : "Edit Workouts";
     },
   },
   methods: {
@@ -107,5 +110,8 @@ li {
 }
 .workout-title {
   font-size: 1.3rem;
+}
+.editable-color {
+  color: red;
 }
 </style>

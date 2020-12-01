@@ -14,18 +14,8 @@
       <button class="btn btn-lg" :class="btnClass" @click="addWorkoutItem">
         <b-icon icon="plus" scale="1.9"></b-icon>
       </button>
-      <button class="btn btn-lg" :class="btnClass" @click="toggleEditable">
-        <b-iconstack>
-          <b-icon stacked icon="pencil-fill" />
-          <b-icon
-            v-if="editable"
-            stacked
-            scale="1.7"
-            flip-h
-            icon="slash-circle"
-            style="color: red"
-          />
-        </b-iconstack>
+      <button class="btn btn-lg btn-primary" @click="toggleEditable">
+        <b-icon icon="pencil-fill" :class="{ 'editable-color': editable }" />
       </button>
       <button class="btn btn-lg" :class="btnClass" @click="saveWorkoutList">
         Save
@@ -107,5 +97,8 @@ button {
 
 .transfer-btn {
   margin: 1em 0 0 0;
+}
+.editable-color {
+  color: red;
 }
 </style>

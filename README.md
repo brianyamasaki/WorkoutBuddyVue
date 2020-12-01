@@ -57,6 +57,13 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - calendar to record workouts completed
 - integration with calendar apps
 
+### Issues
+
+Currently we treat editing and saving workouts and exercises within the workouts differently.
+
+- Adding/Deleting workouts happen immediately and don't require hitting the Save button. This is because we update the database immediately with all changes as soon as the user adds/deletes workouts. Note that you can't edit anything about the workout from this page after adding it.
+- Adding/changing anything within a workout requires hitting the Save button. This is because I don't want to update the database for every keystroke change to the workout. We get charged for reads and writes from the database. Much cheaper to write to the database when the user is done with changes.
+
 ## Authentication
 
 We currently use the Firebase Email/password authentication provider. At some point, we can use OAuth from other providers if needed. Since security is probably not too high of an issue, users can log in once and never log out again.

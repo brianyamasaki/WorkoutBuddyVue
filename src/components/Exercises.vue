@@ -15,16 +15,7 @@
       <b-icon icon="plus" scale="1.9"></b-icon>
     </button>
     <button class="btn btn-lg btn-primary" @click="toggleEditable">
-      <b-iconstack>
-        <b-icon stacked icon="pencil-fill" />
-        <b-icon
-          v-if="isEditing"
-          stacked
-          scale="1.7"
-          icon="slash-circle"
-          style="color: red"
-        />
-      </b-iconstack>
+      <b-icon icon="pencil-fill" :class="{ 'editable-color': isEditing }" />
     </button>
     <button class="btn btn-lg" :class="btnDynamicClasses" @click="save">
       Save
@@ -89,5 +80,8 @@ ul {
 
 button {
   margin: 0 0.5em;
+}
+.editable-color {
+  color: red;
 }
 </style>
