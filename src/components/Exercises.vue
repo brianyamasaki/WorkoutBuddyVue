@@ -6,22 +6,29 @@
         v-for="item in exercises"
         :key="item.id"
         :workoutItem="item"
-        :editable="isEditingWorkout()"
+        :editable="isEditing"
         :titleLine="false"
         :workoutId="workoutId"
       />
     </ul>
-    <button
-      v-if="isEditingWorkout"
-      class="btn btn-secondary btn-lg"
-      @click="addExercise"
-    >
-      Add
+    <button class="btn btn-lg" :class="btnDynamicClasses" @click="addExercise">
+      <b-icon icon="plus" scale="1.9"></b-icon>
     </button>
-    <button class="btn btn-secondary btn-lg" @click="toggleEditable">
-      {{ editableBtnText }}
+    <button class="btn btn-lg btn-primary" @click="toggleEditable">
+      <b-iconstack>
+        <b-icon stacked icon="pencil-fill" />
+        <b-icon
+          v-if="isEditing"
+          stacked
+          scale="1.7"
+          icon="slash-circle"
+          style="color: red"
+        />
+      </b-iconstack>
     </button>
-    <button class="btn btn-secondary btn-lg" @click="save">Save</button>
+    <button class="btn btn-lg" :class="btnDynamicClasses" @click="save">
+      Save
+    </button>
   </div>
 </template>
 
@@ -38,6 +45,16 @@ export default {
   computed: {
     editableBtnText() {
       return this.isEditingWorkout() ? "View Workout" : "Edit Workout";
+    },
+    btnDynamicClasses() {
+      const editing = this.isEditingWorkout();
+      return {
+        "btn-secondary": !editing,
+        "btn-primary": editing,
+      };
+    },
+    isEditing() {
+      return this.isEditingWorkout();
     },
   },
   methods: {

@@ -43,12 +43,23 @@ const setEditingWorkout = ({ commit }, isEditing) => {
   commit('editingWorkout', isEditing);
 };
 
+// Action - get legacy workout from localStorage and create a workout in the account
+const transferLegacyWorkout = ({ commit }) => {
+  const exercises = JSON.parse(localStorage.getItem('workoutList'));
+  commit('addWorkout', {
+    title: 'Transferred Legacy Workout',
+    description: 'A workout originally created without an account',
+    exercises
+  });
+};
+
 export const workoutActions = {
   addWorkoutExercise,
   removeWorkoutExercise,
   saveWorkout,
   addNewWorkout,
-  setEditingWorkout
+  setEditingWorkout,
+  transferLegacyWorkout
 };
 
 // Mutator - Atomic action to modify state.workouts
@@ -76,6 +87,13 @@ const addWorkout = (state, workout) => {
   return db.collection(`users/${state.auth.auth.uid}/workouts`).add(newWorkout);
 };
 
+const removeWorkout = (state, workoutId) => {
+  return db
+    .collection(`users/${state.auth.auth.uid}/workouts`)
+    .doc(workoutId)
+    .delete();
+};
+
 const editingWorkout = (state, isEditing) => {
   state.fEditingWorkout = isEditing;
 };
@@ -98,6 +116,7 @@ export const workoutMutations = {
   setWorkouts,
   addExercise,
   addWorkout,
+  removeWorkout,
   editingWorkout,
   setWorkoutTitle,
   setWorkoutDescription

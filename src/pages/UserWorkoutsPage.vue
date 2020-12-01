@@ -11,10 +11,16 @@
     <NewWorkoutForm v-if="showForm" :fnDone="toggleShowForm" />
     <h3 v-if="loading">Loading...</h3>
     <ul v-else class="text-left">
-      <li v-for="workout in workouts" :key="workout.date" :workout="workout">
-        <router-link :to="routeString(workout)">{{
-          workout.title
-        }}</router-link>
+      <li v-for="workout in workouts" :key="workout.id" :workout="workout">
+        <router-link :to="routeString(workout)">
+          <span class="workout-title">{{ workout.title }}</span>
+        </router-link>
+        <button
+          class="btn btn-sm btn-outline-danger"
+          @click="removeWorkout(workout.id)"
+        >
+          <b-icon icon="slash-circle"></b-icon>
+        </button>
       </li>
     </ul>
     <button
@@ -24,14 +30,11 @@
     >
       {{ editBtnText }}
     </button>
-    <button v-if="!showForm" class="btn btn-secondary btn-med" @click="save">
-      Save
-    </button>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import NewWorkoutForm from "../components/NewWorkout.vue";
 
 export default {
@@ -54,6 +57,7 @@ export default {
   methods: {
     ...mapGetters(["getAuthInfo", "getWorkouts"]),
     ...mapActions(["bindWorkouts", "addNewWorkout"]),
+    ...mapMutations(["removeWorkout"]),
     routeString(workout) {
       return `/workouts/${workout.id}`;
     },
@@ -63,7 +67,14 @@ export default {
     toggleShowForm() {
       this.showForm = !this.showForm;
     },
-    save() {},
+  },
+  filters: {
+    truncText(text, len) {
+      if (!text) return "";
+      if (text.length > len) {
+        return text.slice(0, len - 2) + "..";
+      }
+    },
   },
   mounted: function () {
     const auth = this.getAuthInfo();
@@ -85,5 +96,16 @@ export default {
 <style scoped>
 button {
   margin: 0 0.5em;
+}
+ul {
+  list-style: none;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+}
+.workout-title {
+  font-size: 1.3rem;
 }
 </style>
