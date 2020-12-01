@@ -12,14 +12,17 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    workouts: []
+    workouts: [],
+    fEditingWorkout: false
   },
   plugins: [createPersistedState()],
   getters: {
     getWorkouts: (state) => state.workouts,
     getWorkout: (state) => (workoutId) => {
-      console.log(workoutId);
       return state.workouts.find((workout) => workout.id === workoutId);
+    },
+    isEditingWorkout: (state) => {
+      return state.fEditingWorkout;
     }
   },
   mutations: {

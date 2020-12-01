@@ -12,6 +12,7 @@ service cloud.firestore {
 
 
 ANYBODY AUTHORIZED
+--------------------
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -21,7 +22,8 @@ service cloud.firestore {
   }
 }
 
-
+Current allows users to create, read, update and delete their own records only.
+----------------------
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {

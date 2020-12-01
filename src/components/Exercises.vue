@@ -6,13 +6,13 @@
         v-for="item in exercises"
         :key="item.id"
         :workoutItem="item"
-        :editable="editable"
+        :editable="isEditingWorkout()"
         :titleLine="false"
         :workoutId="workoutId"
       />
     </ul>
     <button
-      v-if="editable"
+      v-if="isEditingWorkout"
       class="btn btn-secondary btn-lg"
       @click="addExercise"
     >
@@ -27,7 +27,7 @@
 
 <script>
 import WorkoutLine from "./WorkoutLine.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "Exercises",
@@ -37,17 +37,18 @@ export default {
   },
   computed: {
     editableBtnText() {
-      return this.editable ? "View Workout" : "Edit Workout";
+      return this.isEditingWorkout() ? "View Workout" : "Edit Workout";
     },
   },
   methods: {
-    ...mapActions(["addWorkoutExercise", "saveWorkout"]),
+    ...mapGetters(["isEditingWorkout"]),
+    ...mapActions(["addWorkoutExercise", "saveWorkout", "setEditingWorkout"]),
     addExercise() {
       this.addWorkoutExercise(this.workoutId);
       this.changed = true;
     },
     toggleEditable() {
-      this.editable = !this.editable;
+      this.setEditingWorkout(!this.isEditingWorkout());
     },
     save() {
       this.saveWorkout(this.workoutId);
@@ -55,7 +56,6 @@ export default {
   },
   data: function () {
     return {
-      editable: false,
       changed: false,
     };
   },

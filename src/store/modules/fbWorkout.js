@@ -1,36 +1,5 @@
 import { db } from '../../plugins/firebase';
 
-// Basic, empty exercise
-const getEmptyExercise = () => {
-  return {
-    id: 0,
-    description: '',
-    sets: 0,
-    reps: 0,
-    weight: 40
-  };
-};
-
-// search through exercise list and find an ID number that isn't currently used
-export const nextListId = (list) => {
-  let maxId = 0;
-  for (const item of list) {
-    if (item.id > maxId) {
-      maxId = item.id;
-    }
-  }
-  return maxId + 1;
-};
-
-// This is an empty, basic workout with a single, empty exercise
-export const defaultWorkout = () => {
-  return {
-    description: '',
-    type: '',
-    exercises: [getEmptyExercise()]
-  };
-};
-
 // Action - Add an empty exercise to a workout
 const addWorkoutExercise = ({ commit }, workoutId) => {
   commit('addExercise', workoutId);
@@ -69,11 +38,17 @@ const addNewWorkout = ({ commit }, payload) => {
   commit('addWorkout', payload);
 };
 
+// Action - set workout editing state
+const setEditingWorkout = ({ commit }, isEditing) => {
+  commit('editingWorkout', isEditing);
+};
+
 export const workoutActions = {
   addWorkoutExercise,
   removeWorkoutExercise,
   saveWorkout,
-  addNewWorkout
+  addNewWorkout,
+  setEditingWorkout
 };
 
 // Mutator - Atomic action to modify state.workouts
@@ -101,12 +76,64 @@ const addWorkout = (state, workout) => {
   return db.collection(`users/${state.auth.auth.uid}/workouts`).add(newWorkout);
 };
 
+const editingWorkout = (state, isEditing) => {
+  state.fEditingWorkout = isEditing;
+};
+
+const setWorkoutTitle = (state, { workoutId, title }) => {
+  const workout = findWorkout(state, workoutId);
+  if (workout && title) {
+    workout.title = title;
+  }
+};
+
+const setWorkoutDescription = (state, { workoutId, description }) => {
+  const workout = findWorkout(state, workoutId);
+  if (workout && description) {
+    workout.description = description;
+  }
+};
+
 export const workoutMutations = {
   setWorkouts,
   addExercise,
-  addWorkout
+  addWorkout,
+  editingWorkout,
+  setWorkoutTitle,
+  setWorkoutDescription
 };
 
 const findWorkout = (state, workoutId) => {
   return state.workouts.find((workout) => workoutId === workout.id);
+};
+
+// Basic, empty exercise
+const getEmptyExercise = () => {
+  return {
+    id: 0,
+    description: '',
+    sets: 0,
+    reps: 0,
+    weight: 40
+  };
+};
+
+// search through exercise list and find an ID number that isn't currently used
+export const nextListId = (list) => {
+  let maxId = 0;
+  for (const item of list) {
+    if (item.id > maxId) {
+      maxId = item.id;
+    }
+  }
+  return maxId + 1;
+};
+
+// This is an empty, basic workout with a single, empty exercise
+export const defaultWorkout = () => {
+  return {
+    description: '',
+    type: '',
+    exercises: [getEmptyExercise()]
+  };
 };
