@@ -1,7 +1,7 @@
 <template>
-  <b-navbar toggleable="md">
+  <b-navbar toggleable="sm">
     <router-link class="navbar-brand" to="/" exact>
-      {{ brand }}
+      <img src="../assets/brand-logo.png" :alt="brand" />
     </router-link>
     <b-navbar-toggle target="nav-collapse" />
 
@@ -31,6 +31,7 @@ export default {
   data: function () {
     return {
       isSignedIn: false,
+      logo: String,
     };
   },
   methods: {
