@@ -1,61 +1,56 @@
 <template>
-  <nav class="navbar navbar-expand-md fixed-top">
-    <router-link class="navbar-brand" to="/">
-    {{ brand }}
+  <b-navbar toggleable="md">
+    <router-link class="navbar-brand" to="/" exact>
+      {{ brand }}
     </router-link>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <b-navbar-toggle target="nav-collapse" />
 
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/ideas">Ideas</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/account">Account</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/workouts">Workouts</router-link>
-        </li>
-      </ul>
-      <b-button v-if="isSignedIn" @click="signOut" class="pull-right">Sign Out</b-button>
-      <router-link v-else class="nav-link pull-right" to="/login">Sign in</router-link>
-    </div>
-  </nav>
+    <b-collapse id="nav-collapse" is-nav>
+      <b-navbar-nav>
+        <b-nav-item to="/" exact>Home</b-nav-item>
+        <b-nav-item to="/ideas" exact>Ideas</b-nav-item>
+        <b-nav-item v-if="isSignedIn" to="/workouts" exact>Workouts</b-nav-item>
+      </b-navbar-nav>
+
+      <b-navbar-nav class="ml-auto">
+        <b-button v-if="isSignedIn" @click="signOut">Sign Out</b-button>
+        <b-nav-item v-else to="/login" exact> Sign in</b-nav-item>
+      </b-navbar-nav>
+    </b-collapse>
+  </b-navbar>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import firebase from 'firebase/app';
+import { mapGetters, mapActions } from "vuex";
+import firebase from "firebase/app";
 
 export default {
   props: {
-    brand: String
+    brand: String,
   },
   data: function () {
     return {
-      isSignedIn: false
-    }
+      isSignedIn: false,
+    };
   },
   methods: {
-    ...mapActions(['signOut']),
-    ...mapGetters(['getAuthInfo'])
-    },
-  name: 'MenuBar',
-  mounted: function() {
-    firebase.auth().onAuthStateChanged(user => {
+    ...mapActions(["signOut"]),
+    ...mapGetters(["getAuthInfo"]),
+  },
+  name: "MenuBar",
+  mounted: function () {
+    firebase.auth().onAuthStateChanged((user) => {
       this.isSignedIn = !!user;
-    })
-  }
-}
+    });
+  },
+};
 </script>
 
 <style scoped>
 .nav-link {
   color: black;
+}
+#workout-buddy-root .router-link-active {
+  color: #007bff;
 }
 </style>

@@ -3,7 +3,7 @@
     <div id="text-container" class="col-6-md col-12-sm">
       <h1>Ideas for future releases</h1>
       <ul>
-        <li v-for="idea in ideas" :key="idea"> {{idea}}</li>
+        <li v-for="idea in ideas" :key="idea">{{ idea }}</li>
       </ul>
     </div>
   </div>
@@ -18,21 +18,27 @@ const ideas = [
   'calendar to record workouts completed',
   'integration with calendar apps',
   'allow login and server storage',
-  'add a streak feature/point system'
+  'add a streak feature/point system',
+  "integration with calendar apps",
+  "allow manual and automatic sorting of workout items",
+  "allow aerobic vs. weight items",
+  "allow saving of adjustments for weight machines",
+  "different workouts per day of week",
+  "calendar to record workouts completed",
 ];
 
 export default {
-  name: 'IdeasPage',
+  name: "IdeasPage",
   data: function () {
-    return {ideas};
-  }
-}
+    return { ideas };
+  },
+};
 </script>
 
 <style scoped>
- #text-container {
-   padding: 1em;
-   background-color: rgba(255, 255, 255, 0.7);
-   border-radius: 1em;
- }
+#text-container {
+  padding: 1em;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 1em;
+}
 </style>

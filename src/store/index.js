@@ -1,39 +1,44 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
+import createPersistedState from 'vuex-persistedstate';
 
 import { vuexfireMutations, firestoreAction } from 'vuexfire';
 import workout from './modules/workout';
 import auth from './modules/auth';
 import { db } from '../plugins/firebase';
+import { workoutActions, workoutMutations } from './modules/fbWorkout';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    users: []
+    workouts: [],
+    fEditingWorkout: false
   },
+  plugins: [createPersistedState()],
   getters: {
-    getUsers(state) {
-      return state.users;
+    getWorkouts: (state) => state.workouts,
+    getWorkout: (state) => (workoutId) => {
+      return state.workouts.find((workout) => workout.id === workoutId);
+    },
+    isEditingWorkout: (state) => {
+      return state.fEditingWorkout;
     }
   },
-  mutations: vuexfireMutations,
+  mutations: {
+    ...vuexfireMutations,
+    ...workoutMutations
+  },
   actions: {
-    bindUsers: firestoreAction(({ bindFirestoreRef }) => {
-      return bindFirestoreRef('users', db.collection('users'));
+    ...workoutActions,
+    bindWorkouts: firestoreAction(({ bindFirestoreRef }, uid) => {
+      return bindFirestoreRef(
+        'workouts',
+        db.collection(`users/${uid}/workouts`)
+      );
     }),
-    addUser: firestoreAction((context, payload) => {
-      return db.collection('users').add(payload);
-    }),
-    deleteUser: firestoreAction((context, payload) => {
-      db.collection('users')
-        .doc(payload)
-        .delete();
-    }),
-    updateNote: firestoreAction((context, payload) => {
-      db.collection('users')
-        .doc(payload.id)
-        .set(payload);
+    unbindWorkouts: firestoreAction(({ unbindFirestoreRef }) => {
+      unbindFirestoreRef('workouts');
     })
   },
   modules: {
