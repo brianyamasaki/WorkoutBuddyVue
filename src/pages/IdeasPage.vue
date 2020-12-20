@@ -25,6 +25,7 @@ const ideas = [
   "allow saving of adjustments for weight machines",
   "different workouts per day of week",
   "calendar to record workouts completed",
+  "Add PDF of workouts and descriptions",
 ];
 
 export default {
