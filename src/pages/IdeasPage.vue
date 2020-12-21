@@ -11,12 +11,21 @@
 
 <script>
 const ideas = [
+  'allow manual and automatic sorting of workout items',
+  'allow aerobic vs. weight items',
+  'allow saving of adjustments for weight machines',
+  'different workouts per day of week',
+  'calendar to record workouts completed',
+  'integration with calendar apps',
+  'allow login and server storage',
+  'add a streak feature/point system',
+  "integration with calendar apps",
   "allow manual and automatic sorting of workout items",
   "allow aerobic vs. weight items",
   "allow saving of adjustments for weight machines",
   "different workouts per day of week",
   "calendar to record workouts completed",
-  "integration with calendar apps",
+  "Add PDF of workouts and descriptions",
 ];
 
 export default {

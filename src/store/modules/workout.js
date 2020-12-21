@@ -4,7 +4,7 @@ function getEmptyItem() {
     description: '',
     sets: 0,
     reps: 0,
-    weight: 40
+    weight: 0
   };
 }
 

@@ -56,6 +56,10 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - different workouts per day of week
 - calendar to record workouts completed
 - integration with calendar apps
+- hide the description until the user explicitly wants it
+- add check marks to completed exercises and gray them out
+- add personal goals section
+- add history dates to workouts
 
 ### Issues
 
