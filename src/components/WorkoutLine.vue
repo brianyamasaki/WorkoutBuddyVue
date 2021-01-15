@@ -1,10 +1,10 @@
 <template>
   <div class="workout-line text-left">
     <div class="description">
-      <div v-if="titleLine" class="titleLine">Description</div>
+      <div v-if="titleLine" class="title-line">Description</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable }"
+        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
         :[readonly]="readonly"
         type="text"
         v-model="workoutItem.description"
@@ -12,10 +12,10 @@
       />
     </div>
     <div class="sets">
-      <div v-if="titleLine" class="titleLine">Sets</div>
+      <div v-if="titleLine" class="title-line">Sets</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable }"
+        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
         :[readonly]="readonly"
         type="number"
         v-model="workoutItem.sets"
@@ -24,12 +24,11 @@
       />
     </div>
     <div class="reps">
-      <div v-if="titleLine" class="titleLine">Reps</div>
+      <div v-if="titleLine" class="title-line">Reps</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable }"
+        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
         :[readonly]="readonly"
-        class="reps"
         type="number"
         v-model="workoutItem.reps"
         placeholder="Reps"
@@ -37,17 +36,28 @@
       />
     </div>
     <div class="weight">
-      <div v-if="titleLine" class="titleLine">Weight</div>
+      <div v-if="titleLine" class="title-line">Weight</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable }"
+        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
         :[readonly]="readonly"
-        class="weight"
         type="number"
         v-model="workoutItem.weight"
         placeholder="Weight or Time"
         min="0"
         step="5"
+      />
+    </div>
+    <div class="done">
+      <div v-if="titleLine" class="title-line">Done</div>
+      <b-form-checkbox
+      v-else
+      :class="{ 'non-editable': !editable }"
+      :[disabled]= "readonly"
+      type="check"
+      value="done"
+      size="lg"
+      v-model="workoutItem.done"
       />
     </div>
     <div class="buttons">
@@ -73,6 +83,9 @@ export default {
     workoutId: String,
   },
   computed: {
+    exerciseFinished() {
+      return this.workoutItem.done;
+    },
     readonly() {
       return this.editable ? "foo" : "readonly";
     },
@@ -97,14 +110,23 @@ export default {
 </script>
 
 <style scoped>
-.titleLine {
+.title-line {
   font-size: 1.2rem;
   font-weight: 700;
+}
+.sets .title-line,
+.reps .title-line {
+  text-align: center;
 }
 .non-editable {
   background: none;
   border: transparent;
   margin: 2px 0;
+}
+.exercise-finished {
+  color: grey;
+  text-decoration: line-through;
+  text-decoration-color: red;
 }
 .workout-line {
   display: flex;
@@ -121,17 +143,18 @@ input {
 .description {
   flex: 2;
 }
-.sets {
-  flex: 1;
-  max-width: 4rem;
-}
-.reps {
-  flex: 1;
-  max-width: 5rem;
-}
-.weight {
+.reps,
+.weight,
+.sets,
+.done {
   flex: 1;
   max-width: 5rem;
+}
+.sets input,
+.reps input,
+.done,
+.weight input {
+  text-align: center;
 }
 .buttons {
   width: 3rem;
