@@ -1,9 +1,9 @@
 <template>
   <div id="workout-buddy-root">
-    <div class="container">
+    <b-container>
       <MenuBar brand="WORKOUT BUDDY" />
       <router-view />
-    </div>
+    </b-container>
   </div>
 </template>
 

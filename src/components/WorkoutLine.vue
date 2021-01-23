@@ -4,7 +4,10 @@
       <div v-if="titleLine" class="title-line">Description</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
+        :class="{
+          'non-editable': !editable,
+          'exercise-finished': exerciseFinished,
+        }"
         :[readonly]="readonly"
         type="text"
         v-model="workoutItem.description"
@@ -15,7 +18,10 @@
       <div v-if="titleLine" class="title-line">Sets</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
+        :class="{
+          'non-editable': !editable,
+          'exercise-finished': exerciseFinished,
+        }"
         :[readonly]="readonly"
         type="number"
         v-model="workoutItem.sets"
@@ -27,7 +33,10 @@
       <div v-if="titleLine" class="title-line">Reps</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
+        :class="{
+          'non-editable': !editable,
+          'exercise-finished': exerciseFinished,
+        }"
         :[readonly]="readonly"
         type="number"
         v-model="workoutItem.reps"
@@ -39,7 +48,10 @@
       <div v-if="titleLine" class="title-line">Weight</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
+        :class="{
+          'non-editable': !editable,
+          'exercise-finished': exerciseFinished,
+        }"
         :[readonly]="readonly"
         type="number"
         v-model="workoutItem.weight"
@@ -51,19 +63,18 @@
     <div class="done">
       <div v-if="titleLine" class="title-line">Done</div>
       <b-form-checkbox
-      v-else
-      :class="{ 'non-editable': !editable }"
-      :[disabled]= "readonly"
-      type="check"
-      value="done"
-      size="lg"
-      v-model="workoutItem.done"
+        v-else
+        :class="{ 'non-editable': !editable }"
+        type="check"
+        value="done"
+        size="lg"
+        v-model="workoutItem.done"
       />
     </div>
     <div class="buttons">
       <button
         v-if="editable"
-        class="btn btn-outline-danger"
+        class="btn btn-outline-danger btn-sm"
         @click="removeItem(workoutItem.id)"
       >
         <b-icon scale="1.3" icon="slash-circle" />
@@ -73,7 +84,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 
 export default {
   props: {
@@ -92,6 +103,7 @@ export default {
   },
   methods: {
     ...mapActions(["removeWorkoutItem", "removeWorkoutExercise"]),
+    ...mapMutations(["copyWorkoutToMasterWorkouts"]),
     removeItem(exerciseId) {
       if (!this.workoutId) {
         this.removeWorkoutItem(exerciseId);
@@ -157,6 +169,6 @@ input {
   text-align: center;
 }
 .buttons {
-  width: 3rem;
+  width: 5rem;
 }
 </style>
