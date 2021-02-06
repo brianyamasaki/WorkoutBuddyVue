@@ -59,7 +59,9 @@ export default {
       this.setEditingWorkout(!this.isEditingWorkout());
     },
     save() {
-      this.saveWorkout(this.workoutId);
+      this.saveWorkout(this.workoutId).catch((error) => {
+        console.error(error.message);
+      });
     },
   },
   data: function () {

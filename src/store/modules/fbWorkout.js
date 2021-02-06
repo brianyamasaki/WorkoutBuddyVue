@@ -5,12 +5,12 @@ const addWorkoutExercise = ({ commit }, workoutId) => {
   commit('addExercise', workoutId);
 };
 
-// Action - Remove a specific workout from a specific workout
+// Action - Remove a specific exercise from a specific workout
 const removeWorkoutExercise = (
   { commit, state },
   { workoutId, exerciseId }
 ) => {
-  // iterate through workouts until we find the target work
+  // iterate through workouts until we find the target workout
   // then filter through exercises and create a new
   // array with the exercises excluding the passed in exerciseId
   const workouts = state.workouts.map((workout) => {
@@ -28,14 +28,42 @@ const removeWorkoutExercise = (
 
 // Action - Save specific workout from state.workouts out to the external Database
 const saveWorkout = ({ state }, workoutId) => {
-  const workout = findWorkout(state, workoutId);
-  const workoutRef = db.collection(`users/${state.auth.auth.uid}/workouts`);
-  workoutRef.doc(workoutId).set(workout, { merge: true });
+  const { workout, collectionName } = findWorkout(state, workoutId);
+  const workoutRef = db.collection(
+    `users/${state.auth.auth.uid}/${collectionName}`
+  );
+  return workoutRef.doc(workoutId).set(workout, { merge: true });
 };
 
 // Action - Create a new empty workout with given fields given in the workout payload
-const addNewWorkout = ({ commit }, payload) => {
-  commit('addWorkout', payload);
+// Note that state.workouts will get automatically updated by Firestore's bindUser binding
+const addNewWorkout = ({ state }, workoutDetails) => {
+  const newWorkout = {
+    ...defaultWorkout(),
+    ...workoutDetails,
+  };
+  return db.collection(`users/${state.auth.auth.uid}/workouts`).add(newWorkout);
+};
+
+// Action - Create a new empty workout with given fields given in the workout payload
+// Note that state.masterWorkouts will get automatically updated by Firestore's bindUser binding
+const addNewMasterWorkout = ({ state }, workoutDetails) => {
+  const newWorkout = {
+    ...defaultWorkout(),
+    ...workoutDetails,
+  };
+  return db
+    .collection(`users/${state.auth.auth.uid}/masterWorkouts`)
+    .add(newWorkout);
+};
+// Action - remove a workout
+// Note that state.workouts will get automatically updated by Firestore's bindUser binding
+const removeWorkout = ({ state }, workoutId) => {
+  const { collectionName } = findWorkout(state, workoutId);
+  return db
+    .collection(`users/${state.auth.auth.uid}/${collectionName}`)
+    .doc(workoutId)
+    .delete();
 };
 
 // Action - set workout editing state
@@ -44,13 +72,35 @@ const setEditingWorkout = ({ commit }, isEditing) => {
 };
 
 // Action - get legacy workout from localStorage and create a workout in the account
-const transferLegacyWorkout = ({ commit }) => {
+const transferLegacyWorkout = ({ state }) => {
   const exercises = JSON.parse(localStorage.getItem('workoutList'));
-  commit('addWorkout', {
+  const newWorkout = {
     title: 'Transferred Legacy Workout',
     description: 'A workout originally created without an account',
-    exercises
-  });
+    exercises,
+  };
+  return db.collection(`users/${state.auth.auth.uid}/workouts`).add(newWorkout);
+};
+
+// Action - copy workouts to master workouts
+const copyWorkoutToMasterWorkouts = ({ state }, workoutId) => {
+  // get workouts and add them to masterWorkouts
+  // Note that Object.assign copies data from the returned workout into a fresh new object,
+  // so we can modify this new object without affecting the original workout,
+  let { workout } = findWorkout(state, workoutId);
+  workout = Object.assign({}, workout);
+  workout.template = true;
+  workout.id = null;
+  const { uid } = state.auth.auth;
+  db.collection(`users/${uid}/masterWorkouts`)
+    .add(workout)
+    .then((docRef) => {
+      docRef.update({
+        id: docRef.id,
+        template: true,
+      });
+      console.log(docRef);
+    });
 };
 
 export const workoutActions = {
@@ -58,8 +108,11 @@ export const workoutActions = {
   removeWorkoutExercise,
   saveWorkout,
   addNewWorkout,
+  addNewMasterWorkout,
+  removeWorkout,
   setEditingWorkout,
-  transferLegacyWorkout
+  transferLegacyWorkout,
+  copyWorkoutToMasterWorkouts,
 };
 
 // Mutator - Atomic action to modify state.workouts
@@ -69,7 +122,7 @@ const setWorkouts = (state, workouts) => {
 
 // Mutator - Atomic action to modify state.workouts to add Exercise
 const addExercise = (state, workoutId) => {
-  const workout = state.workouts.find((workout) => workoutId === workout.id);
+  const { workout } = findWorkout(state, workoutId);
   if (workout) {
     const newExercise = getEmptyExercise();
     newExercise.id = nextListId(workout.exercises);
@@ -77,36 +130,21 @@ const addExercise = (state, workoutId) => {
   }
 };
 
-// Mutator - Atomic action to add workout to list of workouts
-// Note that state.workouts will get automatically updated by Firestore's bindUser binding
-const addWorkout = (state, workout) => {
-  const newWorkout = {
-    ...defaultWorkout(),
-    ...workout
-  };
-  return db.collection(`users/${state.auth.auth.uid}/workouts`).add(newWorkout);
-};
-
-const removeWorkout = (state, workoutId) => {
-  return db
-    .collection(`users/${state.auth.auth.uid}/workouts`)
-    .doc(workoutId)
-    .delete();
-};
-
+// Mutator - sets editing flag
 const editingWorkout = (state, isEditing) => {
   state.fEditingWorkout = isEditing;
 };
 
-const setWorkoutTitle = (state, { workoutId, title }) => {
-  const workout = findWorkout(state, workoutId);
+// Mutator - finds specified workout and sets the title
+const setWorkoutTitle = (state, { workout, title }) => {
   if (workout && title) {
     workout.title = title;
   }
 };
 
-const setWorkoutDescription = (state, { workoutId, description }) => {
-  const workout = findWorkout(state, workoutId);
+// Mutator - finds specific workout and sets the description
+// Note that we don't write to the DB since we expect the user to save to DB similar to changing an exercise
+const setWorkoutDescription = (state, { workout, description }) => {
   if (workout && description) {
     workout.description = description;
   }
@@ -115,15 +153,30 @@ const setWorkoutDescription = (state, { workoutId, description }) => {
 export const workoutMutations = {
   setWorkouts,
   addExercise,
-  addWorkout,
-  removeWorkout,
   editingWorkout,
   setWorkoutTitle,
-  setWorkoutDescription
+  setWorkoutDescription,
 };
 
+// utility functions below
+
+// return a specific workout
 const findWorkout = (state, workoutId) => {
-  return state.workouts.find((workout) => workoutId === workout.id);
+  let isMasterWorkout = false;
+  let foundWorkout = state.workouts.find((workout) => workoutId === workout.id);
+  if (!foundWorkout) {
+    foundWorkout = state.masterWorkouts.find(
+      (workout) => workoutId === workout.id
+    );
+    if (foundWorkout) {
+      isMasterWorkout = true;
+    }
+  }
+  return {
+    workout: foundWorkout,
+    isMasterWorkout,
+    collectionName: isMasterWorkout ? 'masterWorkouts' : 'workouts',
+  };
 };
 
 // Basic, empty exercise
@@ -133,7 +186,7 @@ const getEmptyExercise = () => {
     description: '',
     sets: 0,
     reps: 0,
-    weight: 40
+    weight: 40,
   };
 };
 
@@ -153,6 +206,6 @@ export const defaultWorkout = () => {
   return {
     description: '',
     type: '',
-    exercises: [getEmptyExercise()]
+    exercises: [getEmptyExercise()],
   };
 };

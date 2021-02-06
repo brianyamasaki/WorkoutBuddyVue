@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   props: {
@@ -103,7 +103,6 @@ export default {
   },
   methods: {
     ...mapActions(["removeWorkoutItem", "removeWorkoutExercise"]),
-    ...mapMutations(["copyWorkoutToMasterWorkouts"]),
     removeItem(exerciseId) {
       if (!this.workoutId) {
         this.removeWorkoutItem(exerciseId);

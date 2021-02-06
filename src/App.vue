@@ -1,6 +1,6 @@
 <template>
   <div id="workout-buddy-root">
-    <b-container>
+    <b-container fluid="md">
       <MenuBar brand="WORKOUT BUDDY" />
       <router-view />
     </b-container>

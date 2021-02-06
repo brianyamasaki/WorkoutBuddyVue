@@ -57,7 +57,9 @@ export default {
 
 <style scoped>
 svg {
-  animation: rotation 2s infinite linear;
+  /* animation: rotation 2s infinite ease-in-out; */
+  animation: vertical 1s infinite ease-in-out;
+  animation-direction: alternate;
   margin: 10px 0 8px 0;
 }
 @keyframes rotation {
@@ -66,6 +68,14 @@ svg {
   }
   to {
     transform: rotate(359deg);
+  }
+}
+@keyframes vertical {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: translateY(-10px);
   }
 }
 </style>

@@ -13,7 +13,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     workouts: [],
-    fEditingWorkout: false
+    masterWorkouts: [],
+    fEditingWorkout: false,
   },
   plugins: [createPersistedState()],
   getters: {
@@ -23,11 +24,15 @@ export default new Vuex.Store({
     },
     isEditingWorkout: (state) => {
       return state.fEditingWorkout;
-    }
+    },
+    getMasterWorkouts: (state) => state.masterWorkouts,
+    getMasterWorkout: (state) => (workoutId) => {
+      return state.masterWorkouts.find((workout) => workout.id === workoutId);
+    },
   },
   mutations: {
     ...vuexfireMutations,
-    ...workoutMutations
+    ...workoutMutations,
   },
   actions: {
     ...workoutActions,
@@ -39,10 +44,19 @@ export default new Vuex.Store({
     }),
     unbindWorkouts: firestoreAction(({ unbindFirestoreRef }) => {
       unbindFirestoreRef('workouts');
-    })
+    }),
+    bindMasterWorkouts: firestoreAction(({ bindFirestoreRef }, uid) => {
+      return bindFirestoreRef(
+        'masterWorkouts',
+        db.collection(`users/${uid}/masterWorkouts`)
+      );
+    }),
+    unbindMasterWorkouts: firestoreAction(({ unbindFirestoreRef }) => {
+      unbindFirestoreRef('masterWorkouts');
+    }),
   },
   modules: {
     workout /* temporary localstorage based */,
-    auth
-  }
+    auth,
+  },
 });

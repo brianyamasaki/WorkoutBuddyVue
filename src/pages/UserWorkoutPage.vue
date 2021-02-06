@@ -34,9 +34,12 @@ import Exercises from "../components/Exercises";
 
 export default {
   name: "UserWorkoutPage",
+  props: {
+    isMasterWorkout: Boolean,
+  },
   data: function () {
     return {
-      workoutIndex: null,
+      workout: null,
     };
   },
   computed: {
@@ -58,37 +61,44 @@ export default {
     workoutId() {
       return !this.workout ? "" : this.workout.id;
     },
-    workout() {
-      const workouts = this.getWorkouts();
-      return workouts[this.workoutIndex];
-    },
     editing() {
       return this.isEditingWorkout() ? true : false;
     },
   },
   methods: {
-    ...mapGetters(["getWorkouts", "isEditingWorkout"]),
+    ...mapGetters(["getWorkouts", "isEditingWorkout", "getMasterWorkouts"]),
     ...mapMutations(["setWorkoutTitle", "setWorkoutDescription"]),
+    // called every time the input field for the title is changed.
     onChangeTitle(evt) {
-      console.log(evt.target.value);
       this.setWorkoutTitle({
         title: evt.target.value,
-        workoutId: this.$route.params.id,
+        workout: this.workout,
       });
     },
+    // called every time the input field for the description is changed
     onChangeDescription(evt) {
       this.setWorkoutDescription({
         description: evt.target.value,
-        workoutId: this.$route.params.id,
+        workout: this.workout,
       });
+    },
+    setWorkout(workoutId) {
+      const masterWorkouts = this.getMasterWorkouts();
+      this.workout = masterWorkouts.find((workout) => workout.id === workoutId);
+      if (!this.workout) {
+        const dailyWorkouts = this.getWorkouts();
+        this.workout = dailyWorkouts.find(
+          (workout) => workout.id === workoutId
+        );
+      }
+      return this.workout;
     },
   },
   mounted: function () {
     const workoutId = this.$route.params.id;
-    const workouts = this.getWorkouts();
-    this.workoutIndex = workouts.findIndex(
-      (workout) => workout.id === workoutId
-    );
+    // at this point, we don't know if this is a master workout or a daily workout.
+    // so search through both.
+    this.setWorkout(workoutId);
   },
   components: {
     Exercises,
