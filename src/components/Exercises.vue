@@ -20,7 +20,7 @@
     <button class="btn btn-lg" :class="btnDynamicClasses" @click="save">
       Save
     </button>
-    <b-modal ref ="done-popup" ok-only ok-title="Reset Workout" @ok="hideModal">
+    <b-modal ref ="done-popup" ok-only ok-title="Reset Workout!" @ok="hideModal">
       <div class ="d-block text-center">
         <h3>Congrats on your gains! Workout complete!</h3>
       </div>
