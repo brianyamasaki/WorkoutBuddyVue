@@ -28,6 +28,9 @@
     >
       Transfer Workout to Account
     </button>
+    <div v-if="IsAllDone">
+      Wooooo!!! Workout complete!
+    </div>
   </div>
 </template>
 
@@ -53,6 +56,14 @@ export default {
     canTransferWorkout() {
       return this.allWorkoutItems.length > 0 && this.isSignedIn;
     },
+    IsAllDone() {
+      for (let i = 0; i < this.allWorkoutItems.length; i++) {
+        if (!this.allWorkoutItems[i].done) {
+          return false;
+        }
+      }
+      return true;
+    }
   },
   methods: {
     ...mapActions([

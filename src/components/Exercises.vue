@@ -20,6 +20,14 @@
     <button class="btn btn-lg" :class="btnDynamicClasses" @click="save">
       Save
     </button>
+    <b-modal ref ="done-popup" ok-only ok-title="Reset Workout" @ok="hideModal">
+      <div class ="d-block text-center">
+        <h3>Congrats on your gains! Workout complete!</h3>
+      </div>
+    </b-modal>
+    <div v-if="isAllDone">
+      
+    </div>
   </div>
 </template>
 
@@ -47,6 +55,18 @@ export default {
     isEditing() {
       return this.isEditingWorkout();
     },
+    isAllDone() {
+      for (let i = 0; i < this.exercises.length; i++) {
+        if (!this.exercises[i].done) {
+          return false;
+        }
+      }
+      const modalCheck = this.$refs['done-popup'];
+      if (modalCheck) {
+        modalCheck.show();
+      }
+      return true;
+    }
   },
   methods: {
     ...mapGetters(["isEditingWorkout"]),
@@ -61,6 +81,11 @@ export default {
     save() {
       this.saveWorkout(this.workoutId);
     },
+    hideModal() {
+      for (let i = 0; i < this.exercises.length; i++) {
+        this.exercises[i].done = false;
+      }
+    }
   },
   data: function () {
     return {

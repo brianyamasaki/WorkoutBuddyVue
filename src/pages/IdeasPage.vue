@@ -17,7 +17,10 @@ const ideas = [
   "allow aerobic vs. weight items",
   "Add PDF of workouts and descriptions",
   "add a 'workout completed' message when all check boxes are done",
-  "When you open workout have a master side and a 'today's workout' side"
+  "When you open workout have a master side and a 'today's workout' side",
+  "fix: --------------------------------------------------------------------------------------------",
+  "Mobile formatting wierd spacing and nothing lining up right;",
+  "login 'bug' --make it enter password"
 ];
 
 export default {
