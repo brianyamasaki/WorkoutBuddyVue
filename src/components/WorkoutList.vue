@@ -28,9 +28,7 @@
     >
       Transfer Workout to Account
     </button>
-    <div v-if="IsAllDone">
-      Wooooo!!! Workout complete!
-    </div>
+    <div v-if="IsAllDone">Wooooo!!! Workout complete!</div>
   </div>
 </template>
 
@@ -63,7 +61,7 @@ export default {
         }
       }
       return true;
-    }
+    },
   },
   methods: {
     ...mapActions([

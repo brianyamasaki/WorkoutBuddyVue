@@ -4,7 +4,10 @@
       <div v-if="titleLine" class="title-line">Description</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
+        :class="{
+          'non-editable': !editable,
+          'exercise-finished': exerciseFinished,
+        }"
         :[readonly]="readonly"
         type="text"
         v-model="workoutItem.description"
@@ -15,7 +18,10 @@
       <div v-if="titleLine" class="title-line">Sets</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
+        :class="{
+          'non-editable': !editable,
+          'exercise-finished': exerciseFinished,
+        }"
         :[readonly]="readonly"
         type="number"
         v-model="workoutItem.sets"
@@ -27,7 +33,10 @@
       <div v-if="titleLine" class="title-line">Reps</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
+        :class="{
+          'non-editable': !editable,
+          'exercise-finished': exerciseFinished,
+        }"
         :[readonly]="readonly"
         type="number"
         v-model="workoutItem.reps"
@@ -39,7 +48,10 @@
       <div v-if="titleLine" class="title-line">Weight</div>
       <input
         v-else
-        :class="{ 'non-editable': !editable , 'exercise-finished': exerciseFinished}"
+        :class="{
+          'non-editable': !editable,
+          'exercise-finished': exerciseFinished,
+        }"
         :[readonly]="readonly"
         type="number"
         v-model="workoutItem.weight"
@@ -51,18 +63,17 @@
     <div class="done">
       <div v-if="titleLine" class="title-line">Done</div>
       <b-form-checkbox
-      v-else
-      :class="{ 'non-editable': !editable }"
-      :[disabled]= "readonly"
-      type="check"
-      value="done"
-      size="lg"
-      v-model="workoutItem.done"
+        v-else
+        :class="{ 'non-editable': !editable }"
+        :[disabled]="readonly"
+        type="check"
+        value="done"
+        size="lg"
+        v-model="workoutItem.done"
       />
     </div>
-    <div class="buttons">
+    <div v-if="editable" class="buttons">
       <button
-        v-if="editable"
         class="btn btn-outline-danger"
         @click="removeItem(workoutItem.id)"
       >
@@ -110,9 +121,16 @@ export default {
 </script>
 
 <style scoped>
-.title-line {
-  font-size: 1.2rem;
-  font-weight: 700;
+@media screen and (min-device-width: 375px) and (max-device-width: 812px) and (orientation: portrait) {
+  .title-line {
+    font-weight: 700;
+  }
+}
+@media screen and (min-device-width: 813px) {
+  .title-line {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
 }
 .sets .title-line,
 .reps .title-line {
@@ -133,6 +151,7 @@ export default {
   justify-content: space-between;
   margin-bottom: 0.25rem;
 }
+
 .workout-line > div {
   margin-right: 8px;
 }
