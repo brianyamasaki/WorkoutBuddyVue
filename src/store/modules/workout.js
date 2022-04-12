@@ -1,3 +1,7 @@
+// This file is NOT using a database. This stores workout data in the browser's Localstorage
+// That means this data is stuck on this device and even only on this browser. 
+// This is ONLY used by the legacy workout list page, which may not even be in the current application
+
 function getEmptyItem() {
   return {
     id: 0,
